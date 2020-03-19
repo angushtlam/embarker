@@ -1,0 +1,61 @@
+plugins {
+    id("idea")
+    id("java")
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url "https://maven.enginehub.org/repo/" }
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+idea {
+    module {
+        sourceDirs += file("$projectDir/build/classes/java/main")
+        generatedSourceDirs += file("$projectDir/build/classes/java/main")
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src/resources'
+        }
+    }
+    generated {
+        java {
+            srcDir 'build/generated/sources/annotationProcessor'
+        }
+    }
+}
+
+dependencies {
+    compile 'mysql:mysql-connector-java:8.0.11'
+    compileOnly 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.2'
+}
+
+jar {
+    actions = []
+    dependsOn = []
+    dependsOn('shadowJar')
+}
+
+shadowJar {
+    dependencies {
+        exclude 'org.spigotmc:spigot-api:.*'
+        exclude 'org.spigotmc:spigot:.*'
+        exclude 'org.bukkit:bukkit:.*'
+        exclude 'com.sk89q.worldguard:worldguard-bukkit:.*'
+    }
+}

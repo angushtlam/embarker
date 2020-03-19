@@ -1,0 +1,9 @@
+main: com.raeic.embarker.Embarker
+name: Embarker
+version: 1
+description: Custom plugin for Embarker Minecraft server
+api-version: 1.15
+load: STARTUP
+author: Taurhuzz
+website: https://raeic.com
+depend: [WorldGuard]
