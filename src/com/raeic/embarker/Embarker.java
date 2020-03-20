@@ -2,6 +2,8 @@ package com.raeic.embarker;
 
 import com.raeic.embarker.auth.events.PlayerAuthListeners;
 import com.raeic.embarker.auth.state.ServerStartupState;
+import com.raeic.embarker.cities.commands.StakeCommand;
+import com.raeic.embarker.cities.commands.UnstakeCommand;
 import com.raeic.embarker.db.DB;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -12,6 +14,10 @@ public class Embarker extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+
+        // Set up commands
+        this.getCommand("stake").setExecutor(new StakeCommand());
+        this.getCommand("unstake").setExecutor(new UnstakeCommand());
 
         // Set up listeners
         this.getServer().getPluginManager().registerEvents(new PlayerAuthListeners(), this);

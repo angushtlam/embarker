@@ -64,7 +64,7 @@ public class EmbarkerUser {
         return new EmbarkerUser(username, uniqueId, firstLogin, latestLogin);
     }
 
-    public boolean save() {
+    public void save() {
         if (EmbarkerUser.findOne(this.uniqueId) != null) {
             String sql = "update embarkeruser set username = ?, firstLogin = ?, latestLogin = ? where uniqueId = ?";
 
@@ -75,7 +75,6 @@ public class EmbarkerUser {
                 values.setTimestamp(3, this.latestLogin);
                 values.setString(4, this.uniqueId);
                 values.executeUpdate();
-                return true;
 
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
@@ -90,13 +89,11 @@ public class EmbarkerUser {
                 values.setTimestamp(3, this.firstLogin);
                 values.setTimestamp(4, this.latestLogin);
                 values.executeUpdate();
-                return true;
 
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
         }
 
-        return false;
     }
 }

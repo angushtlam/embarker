@@ -7,3 +7,10 @@ load: STARTUP
 author: Taurhuzz
 website: https://raeic.com
 depend: [WorldGuard]
+commands:
+  stake:
+    description: Stake a chunk of land
+    usage: /<command>
+  unstake:
+    description: Unstake a chunk of land
+    usage: /<command>
