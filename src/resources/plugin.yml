@@ -10,7 +10,7 @@ depend: [WorldGuard]
 commands:
   stake:
     description: Stake a chunk of land
-    usage: /<command>
+    usage: /<command> (confirm)
   unstake:
     description: Unstake a chunk of land
     usage: /<command>
