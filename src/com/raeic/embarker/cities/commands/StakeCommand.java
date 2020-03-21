@@ -1,5 +1,6 @@
 package com.raeic.embarker.cities.commands;
 
+import com.raeic.embarker.cities.enums.StakeCondition;
 import com.raeic.embarker.cities.models.StakedChunk;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
@@ -19,6 +20,7 @@ public class StakeCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 1 || (args.length == 1 && !args[0].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Usage: /stake (confirm)");
+            return false;
         }
 
         if (!(sender instanceof Player)) {
@@ -44,17 +46,31 @@ public class StakeCommand implements CommandExecutor {
                 p.sendMessage("Sorry, this chunk of land is already staked by an unknown player.");
             }
         } else {
-            int totalOwned = StakedChunk.countOwnedBy(p.getUniqueId().toString());
+            String ownerUniqueId = p.getUniqueId().toString();
+            int totalOwned = StakedChunk.countOwnedBy(ownerUniqueId);
             int cost = (int) Math.round(Math.pow(totalOwned + 1, 2));
             String emeraldPlurality = cost == 1 ? "Emerald" : "Emeralds";
 
+            StakeCondition condition = StakedChunk.canStake(ownerUniqueId, chunk.getX(), chunk.getZ());
+
             if (args.length == 0) {
-                p.sendMessage("This chunk of land is unowned. You can stake it by entering /stake confirm.");
+                p.sendMessage("This chunk of land is unowned.");
+
+                if (condition.equals(StakeCondition.CAN_STAKE)) {
+                    p.sendMessage("You can stake it by entering /stake confirm.");
+                } else if (condition.equals(StakeCondition.NO_ADJACENT)) {
+                    p.sendMessage("You can only stake additional chunks of land adjacent to your other chunks.");
+                }
 
                 String chunkPlurality = totalOwned == 1 ? "chunk" : "chunks";
-                p.sendMessage("You own " + totalOwned + " " + chunkPlurality + " of land. To claim another, you need " + cost + " " + emeraldPlurality + " .");
+                p.sendMessage("You own " + totalOwned + " " + chunkPlurality + " of land. To claim another, you need " + cost + " " + emeraldPlurality + ".");
 
             } else if (args[0].equalsIgnoreCase("confirm")) {
+                if (condition.equals(StakeCondition.NO_ADJACENT)) {
+                    p.sendMessage("You can only stake additional chunks of land adjacent to your initial stake.");
+                    return true;
+                }
+
                 // Make sure player is not broke
                 if (!p.getInventory().containsAtLeast(new ItemStack(Material.EMERALD), cost)) {
                     p.sendMessage("You need " + cost + " " + emeraldPlurality + " to stake this chunk of land.");

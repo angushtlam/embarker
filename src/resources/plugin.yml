@@ -13,4 +13,4 @@ commands:
     usage: /<command> (confirm)
   unstake:
     description: Unstake a chunk of land
-    usage: /<command>
+    usage: /<command> (confirm)
