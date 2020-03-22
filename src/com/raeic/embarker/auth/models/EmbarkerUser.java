@@ -98,6 +98,5 @@ public class EmbarkerUser {
                 System.out.println(ex.getMessage());
             }
         }
-
     }
 }
