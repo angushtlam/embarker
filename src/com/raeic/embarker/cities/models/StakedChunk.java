@@ -1,13 +1,13 @@
 package com.raeic.embarker.cities.models;
 
+import com.raeic.embarker.Embarker;
 import com.raeic.embarker.cities.enums.StakeCondition;
 import com.raeic.embarker.cities.enums.UnstakeCondition;
 import com.raeic.embarker.db.DB;
-import org.bukkit.Chunk;
+import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -31,51 +31,61 @@ public class StakedChunk {
     }
 
     public void save() {
-        if (StakedChunk.findOne(this.coordX, this.coordZ) != null) {
-            String sql = "update embarkerstakedchunk set ownerUniqueId = ?, lastUpdated = ? where coordX = ? and coordZ = ?";
+        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+            if (StakedChunk.findOne(this.coordX, this.coordZ) != null) {
+                String sql = "update embarkerstakedchunk set ownerUniqueId = ?, lastUpdated = ? where coordX = ? and coordZ = ?";
 
-            try (Connection conn = DB.getConnection();
-                 PreparedStatement values = conn.prepareStatement(sql)) {
-                values.setString(1, this.ownerUniqueId);
-                values.setTimestamp(2, this.lastUpdated);
-                values.setInt(3, this.coordX);
-                values.setInt(4, this.coordZ);
-                values.executeUpdate();
+                try {
+                    Connection conn = DB.getConnection();
+                    PreparedStatement values = conn.prepareStatement(sql);
+                    values.setString(1, this.ownerUniqueId);
+                    values.setTimestamp(2, this.lastUpdated);
+                    values.setInt(3, this.coordX);
+                    values.setInt(4, this.coordZ);
+                    values.executeUpdate();
+                    values.closeOnCompletion();
 
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            } else {
+                String sql = "insert into embarkerstakedchunk(coordX, coordZ, ownerUniqueId) values(?, ?, ?)";
+
+                try {
+                    Connection conn = DB.getConnection();
+                    PreparedStatement values = conn.prepareStatement(sql);
+                    values.setInt(1, this.coordX);
+                    values.setInt(2, this.coordZ);
+                    values.setString(3, this.ownerUniqueId);
+                    values.executeUpdate();
+                    values.closeOnCompletion();
+
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
-        } else {
-            String sql = "insert into embarkerstakedchunk(coordX, coordZ, ownerUniqueId) values(?, ?, ?)";
-
-            try (Connection conn = DB.getConnection();
-                 PreparedStatement values = conn.prepareStatement(sql)) {
-                values.setInt(1, this.coordX);
-                values.setInt(2, this.coordZ);
-                values.setString(3, this.ownerUniqueId);
-                values.executeUpdate();
-
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
+        });
     }
 
     public void delete() {
-        if (StakedChunk.findOne(this.coordX, this.coordZ) != null) {
-            String sql = "delete from embarkerstakedchunk where coordX = ? and coordZ = ? and ownerUniqueId = ?";
+        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+            if (StakedChunk.findOne(this.coordX, this.coordZ) != null) {
+                String sql = "delete from embarkerstakedchunk where coordX = ? and coordZ = ? and ownerUniqueId = ?";
 
-            try (Connection conn = DB.getConnection();
-                 PreparedStatement values = conn.prepareStatement(sql)) {
-                values.setInt(1, this.coordX);
-                values.setInt(2, this.coordZ);
-                values.setString(3, this.ownerUniqueId);
-                values.executeUpdate();
+                try {
+                    Connection conn = DB.getConnection();
+                    PreparedStatement values = conn.prepareStatement(sql);
+                    values.setInt(1, this.coordX);
+                    values.setInt(2, this.coordZ);
+                    values.setString(3, this.ownerUniqueId);
+                    values.executeUpdate();
+                    values.closeOnCompletion();
 
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
-        }
+        });
     }
 
     public String getOwnerUniqueId() {
@@ -85,54 +95,54 @@ public class StakedChunk {
     public static StakedChunk findOne(int coordX, int coordZ) {
         String sql = "select ownerUniqueId, firstStaked, lastUpdated from embarkerstakedchunk where coordX = '" + coordX + "' and coordZ = '" + coordZ + "' limit 1";
 
-        String ownerUniqueId = null;
-        Timestamp firstStaked = null;
-        Timestamp lastUpdated = null;
+        StakedChunk result = null;
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
+            // There should only be zero or one row.
             while (results.next()) {
-                ownerUniqueId = results.getString("ownerUniqueId");
-                firstStaked = results.getTimestamp("firstStaked");
-                lastUpdated = results.getTimestamp("lastUpdated");
+                String ownerUniqueId = results.getString("ownerUniqueId");
+                Timestamp firstStaked = results.getTimestamp("firstStaked");
+                Timestamp lastUpdated = results.getTimestamp("lastUpdated");
+                result = new StakedChunk(coordX, coordZ, ownerUniqueId, firstStaked, lastUpdated);
             }
+
+            results.close();
+            statement.closeOnCompletion();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return null;
         }
 
-        if (ownerUniqueId == null) {
-            return null;
-        }
-
-        return new StakedChunk(coordX, coordZ, ownerUniqueId, firstStaked, lastUpdated);
+        return result;
     }
 
 
     public static ArrayList<StakedChunk> findAllOwnedBy(String ownerUniqueId) {
         String sql = "select coordX, coordZ, firstStaked, lastUpdated from embarkerstakedchunk where ownerUniqueId = '" + ownerUniqueId + "'";
 
-        int coordX = 0;
-        int coordZ = 0;
-        Timestamp firstStaked = null;
-        Timestamp lastUpdated = null;
-
         ArrayList<StakedChunk> chunks = new ArrayList<>();
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
             while (results.next()) {
-                coordX = results.getInt("coordX");
-                coordZ = results.getInt("coordZ");
-                firstStaked = results.getTimestamp("firstStaked");
-                lastUpdated = results.getTimestamp("lastUpdated");
-
+                int coordX = results.getInt("coordX");
+                int coordZ = results.getInt("coordZ");
+                Timestamp firstStaked = results.getTimestamp("firstStaked");
+                Timestamp lastUpdated = results.getTimestamp("lastUpdated");
                 chunks.add(new StakedChunk(coordX, coordZ, ownerUniqueId, firstStaked, lastUpdated));
             }
+
+            results.close();
+            statement.closeOnCompletion();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return new ArrayList<>();
@@ -146,13 +156,18 @@ public class StakedChunk {
 
         int total = 0;
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
             while (results.next()) {
                 total = results.getInt("total");
             }
+
+            results.close();
+            statement.closeOnCompletion();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return -1;
@@ -171,19 +186,24 @@ public class StakedChunk {
         }
 
         String sql = "select count(*) as total from embarkerstakedchunk where ownerUniqueId = '" + ownerUniqueId + "' and ("
-                           + "(coordX = " + coordX + " and (coordZ = " + (coordZ - 1) + " or coordZ = " + (coordZ + 1) + "))"
-                           + "or (coordZ = " + coordZ + " and (coordX = " + (coordX - 1) + " or coordX = " + (coordX + 1) + "))"
-                           + ")";
+                     + "(coordX = " + coordX + " and (coordZ = " + (coordZ - 1) + " or coordZ = " + (coordZ + 1) + "))"
+                     + "or (coordZ = " + coordZ + " and (coordX = " + (coordX - 1) + " or coordX = " + (coordX + 1) + "))"
+                     + ")";
 
         int total = 0;
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
             while (results.next()) {
                 total = results.getInt("total");
             }
+
+            results.close();
+            statement.closeOnCompletion();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return StakeCondition.DATABASE_ERROR;

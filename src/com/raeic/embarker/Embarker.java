@@ -11,9 +11,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.SQLException;
 
 public class Embarker extends JavaPlugin {
+    public static Embarker plugin = null;
+
     @Override
     public void onEnable() {
         super.onEnable();
+
+        Embarker.plugin = this;
 
         // Set up commands
         this.getCommand("stake").setExecutor(new StakeCommand());
@@ -43,5 +47,7 @@ public class Embarker extends JavaPlugin {
     @Override
     public void onDisable() {
         super.onDisable();
+
+        DB.closeConnection();
     }
 }

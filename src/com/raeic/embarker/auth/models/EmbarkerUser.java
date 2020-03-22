@@ -68,13 +68,15 @@ public class EmbarkerUser {
         if (EmbarkerUser.findOne(this.uniqueId) != null) {
             String sql = "update embarkeruser set username = ?, firstLogin = ?, latestLogin = ? where uniqueId = ?";
 
-            try (Connection conn = DB.getConnection();
-                 PreparedStatement values = conn.prepareStatement(sql)) {
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
                 values.setString(1, this.username);
                 values.setTimestamp(2, this.firstLogin);
                 values.setTimestamp(3, this.latestLogin);
                 values.setString(4, this.uniqueId);
                 values.executeUpdate();
+                values.closeOnCompletion();
 
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
@@ -82,13 +84,15 @@ public class EmbarkerUser {
         } else {
             String sql = "insert into embarkeruser(username, uniqueId, firstLogin, latestLogin) values(?, ?, ?, ?)";
 
-            try (Connection conn = DB.getConnection();
-                 PreparedStatement values = conn.prepareStatement(sql)) {
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
                 values.setString(1, this.username);
                 values.setString(2, this.uniqueId);
                 values.setTimestamp(3, this.firstLogin);
                 values.setTimestamp(4, this.latestLogin);
                 values.executeUpdate();
+                values.closeOnCompletion();
 
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
