@@ -30,13 +30,13 @@ public class UnstakeCommand implements CommandExecutor {
 
         Chunk chunk = p.getLocation().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         if (stakedChunk == null) {
             p.sendMessage("This chunk of land is not staked.");
 
         } else if (stakedChunk.getOwnerUniqueId().equals(ownerUniqueId)) {
-            UnstakeCondition unstakeCondition = StakedChunk.canUnstake(ownerUniqueId, chunk.getX(), chunk.getZ());
+            UnstakeCondition unstakeCondition = StakedChunk.canUnstake(ownerUniqueId, chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
             if (unstakeCondition.equals(UnstakeCondition.CAN_UNSTAKE)) {
                 if (args.length == 1 && args[0].equalsIgnoreCase("confirm")) {
                     stakedChunk.delete();

@@ -1,6 +1,7 @@
 package com.raeic.embarker.cities.events;
 
 import com.raeic.embarker.cities.models.StakedChunk;
+import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,8 +22,9 @@ public class EntityBlockChangeListeners implements Listener {
         ArrayList<Block> finalBlockList = new ArrayList<>();
 
         for (Block block : blockList) {
-            int coordX = block.getChunk().getX();
-            int coordZ = block.getChunk().getZ();
+            Chunk chunk = block.getChunk();
+            int coordX = chunk.getX();
+            int coordZ = chunk.getZ();
             String key = coordX + ":" + coordZ;
 
             // If the hashmap already contains the chunk, don't fetch the chunk.
@@ -34,7 +36,7 @@ public class EntityBlockChangeListeners implements Listener {
                 }
 
             } else {
-                StakedChunk stakedChunk = StakedChunk.findOne(coordX, coordZ);
+                StakedChunk stakedChunk = StakedChunk.findOne(coordX, coordZ, chunk.getWorld().getName());
                 if (stakedChunk != null) {
                     chunksOwnership.put(key, true);
                 } else {

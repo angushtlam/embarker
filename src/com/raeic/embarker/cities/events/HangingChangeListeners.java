@@ -27,7 +27,7 @@ public class HangingChangeListeners implements Listener {
         Hanging hanging = event.getEntity();
         Chunk chunk = hanging.getLocation().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -54,7 +54,7 @@ public class HangingChangeListeners implements Listener {
         }
 
         Chunk chunk = event.getBlock().getChunk();
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {

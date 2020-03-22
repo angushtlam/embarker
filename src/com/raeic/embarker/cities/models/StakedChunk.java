@@ -14,26 +14,28 @@ import java.util.LinkedList;
 public class StakedChunk {
     int coordX;
     int coordZ;
+    String worldName;
     String ownerUniqueId;
     Timestamp firstStaked;
     Timestamp lastUpdated;
 
-    public StakedChunk(int coordX, int coordZ, String ownerUniqueId, Timestamp firstStaked, Timestamp lastUpdated) {
+    public StakedChunk(int coordX, int coordZ, String worldName, String ownerUniqueId, Timestamp firstStaked, Timestamp lastUpdated) {
         this.coordX = coordX;
         this.coordZ = coordZ;
+        this.worldName = worldName;
         this.ownerUniqueId = ownerUniqueId;
         this.firstStaked = firstStaked;
         this.lastUpdated = lastUpdated;
     }
 
-    public StakedChunk(int coordX, int coordZ, String ownerUniqueId) {
-        this(coordX, coordZ, ownerUniqueId, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+    public StakedChunk(int coordX, int coordZ, String worldName, String ownerUniqueId) {
+        this(coordX, coordZ, worldName, ownerUniqueId, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
     }
 
     public void save() {
         Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
-            if (StakedChunk.findOne(this.coordX, this.coordZ) != null) {
-                String sql = "update embarkerstakedchunk set ownerUniqueId = ?, lastUpdated = ? where coordX = ? and coordZ = ?";
+            if (StakedChunk.findOne(this.coordX, this.coordZ, this.worldName) != null) {
+                String sql = "update embarkerstakedchunk set ownerUniqueId = ?, lastUpdated = ? where coordX = ? and coordZ = ? and worldName = ?";
 
                 try {
                     Connection conn = DB.getConnection();
@@ -42,6 +44,7 @@ public class StakedChunk {
                     values.setTimestamp(2, this.lastUpdated);
                     values.setInt(3, this.coordX);
                     values.setInt(4, this.coordZ);
+                    values.setString(5, this.worldName);
                     values.executeUpdate();
                     values.closeOnCompletion();
 
@@ -49,14 +52,15 @@ public class StakedChunk {
                     System.out.println(ex.getMessage());
                 }
             } else {
-                String sql = "insert into embarkerstakedchunk(coordX, coordZ, ownerUniqueId) values(?, ?, ?)";
+                String sql = "insert into embarkerstakedchunk(coordX, coordZ, worldName, ownerUniqueId) values(?, ?, ?, ?)";
 
                 try {
                     Connection conn = DB.getConnection();
                     PreparedStatement values = conn.prepareStatement(sql);
                     values.setInt(1, this.coordX);
                     values.setInt(2, this.coordZ);
-                    values.setString(3, this.ownerUniqueId);
+                    values.setString(3, this.worldName);
+                    values.setString(4, this.ownerUniqueId);
                     values.executeUpdate();
                     values.closeOnCompletion();
 
@@ -69,8 +73,8 @@ public class StakedChunk {
 
     public void delete() {
         Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
-            if (StakedChunk.findOne(this.coordX, this.coordZ) != null) {
-                String sql = "delete from embarkerstakedchunk where coordX = ? and coordZ = ? and ownerUniqueId = ?";
+            if (StakedChunk.findOne(this.coordX, this.coordZ, this.worldName) != null) {
+                String sql = "delete from embarkerstakedchunk where coordX = ? and coordZ = ? and worldName = ? and ownerUniqueId = ?";
 
                 try {
                     Connection conn = DB.getConnection();
@@ -78,6 +82,7 @@ public class StakedChunk {
                     values.setInt(1, this.coordX);
                     values.setInt(2, this.coordZ);
                     values.setString(3, this.ownerUniqueId);
+                    values.setString(4, this.worldName);
                     values.executeUpdate();
                     values.closeOnCompletion();
 
@@ -92,8 +97,12 @@ public class StakedChunk {
         return this.ownerUniqueId;
     }
 
-    public static StakedChunk findOne(int coordX, int coordZ) {
-        String sql = "select ownerUniqueId, firstStaked, lastUpdated from embarkerstakedchunk where coordX = '" + coordX + "' and coordZ = '" + coordZ + "' limit 1";
+    private String getWorldName() {
+        return this.worldName;
+    }
+
+    public static StakedChunk findOne(int coordX, int coordZ, String worldName) {
+        String sql = "select ownerUniqueId, firstStaked, lastUpdated from embarkerstakedchunk where coordX = '" + coordX + "' and coordZ = '" + coordZ + "' and worldName = '" + worldName + "' limit 1";
 
         StakedChunk result = null;
 
@@ -107,7 +116,7 @@ public class StakedChunk {
                 String ownerUniqueId = results.getString("ownerUniqueId");
                 Timestamp firstStaked = results.getTimestamp("firstStaked");
                 Timestamp lastUpdated = results.getTimestamp("lastUpdated");
-                result = new StakedChunk(coordX, coordZ, ownerUniqueId, firstStaked, lastUpdated);
+                result = new StakedChunk(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
             }
 
             results.close();
@@ -123,7 +132,7 @@ public class StakedChunk {
 
 
     public static ArrayList<StakedChunk> findAllOwnedBy(String ownerUniqueId) {
-        String sql = "select coordX, coordZ, firstStaked, lastUpdated from embarkerstakedchunk where ownerUniqueId = '" + ownerUniqueId + "'";
+        String sql = "select coordX, coordZ, worldName, firstStaked, lastUpdated from embarkerstakedchunk where ownerUniqueId = '" + ownerUniqueId + "'";
 
         ArrayList<StakedChunk> chunks = new ArrayList<>();
 
@@ -135,9 +144,10 @@ public class StakedChunk {
             while (results.next()) {
                 int coordX = results.getInt("coordX");
                 int coordZ = results.getInt("coordZ");
+                String worldName = results.getString("worldName");
                 Timestamp firstStaked = results.getTimestamp("firstStaked");
                 Timestamp lastUpdated = results.getTimestamp("lastUpdated");
-                chunks.add(new StakedChunk(coordX, coordZ, ownerUniqueId, firstStaked, lastUpdated));
+                chunks.add(new StakedChunk(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated));
             }
 
             results.close();
@@ -176,8 +186,8 @@ public class StakedChunk {
         return total;
     }
 
-    public static StakeCondition canStake(String ownerUniqueId, int coordX, int coordZ) {
-        if (StakedChunk.findOne(coordX, coordZ) != null) {
+    public static StakeCondition canStake(String ownerUniqueId, int coordX, int coordZ, String worldName) {
+        if (StakedChunk.findOne(coordX, coordZ, worldName) != null) {
             return StakeCondition.ALREADY_STAKED;
         }
 
@@ -185,10 +195,14 @@ public class StakedChunk {
             return StakeCondition.CAN_STAKE;
         }
 
-        String sql = "select count(*) as total from embarkerstakedchunk where ownerUniqueId = '" + ownerUniqueId + "' and ("
-                     + "(coordX = " + coordX + " and (coordZ = " + (coordZ - 1) + " or coordZ = " + (coordZ + 1) + "))"
-                     + "or (coordZ = " + coordZ + " and (coordX = " + (coordX - 1) + " or coordX = " + (coordX + 1) + "))"
-                     + ")";
+        String sql = "select count(*) as total from embarkerstakedchunk "
+                     + "where "
+                     + "  ownerUniqueId = '" + ownerUniqueId + "' "
+                     + "  and worldName = '" + worldName + "' "
+                     + "  and ("
+                     + "    (coordX = " + coordX + " and (coordZ = " + (coordZ - 1) + " or coordZ = " + (coordZ + 1) + "))"
+                     + "    or (coordZ = " + coordZ + " and (coordX = " + (coordX - 1) + " or coordX = " + (coordX + 1) + "))"
+                     + "  )";
 
         int total = 0;
 
@@ -216,7 +230,7 @@ public class StakedChunk {
         return StakeCondition.NO_ADJACENT;
     }
 
-    public static UnstakeCondition canUnstake(String ownerUniqueId, int coordX, int coordZ) {
+    public static UnstakeCondition canUnstake(String ownerUniqueId, int coordX, int coordZ, String worldName) {
         // We're building an adjacency list of chunks that exist.
         HashMap<Integer, LinkedList<Integer>> adjacencyList = new HashMap<>();
         ArrayList<StakedChunk> chunks = StakedChunk.findAllOwnedBy(ownerUniqueId);
@@ -226,8 +240,13 @@ public class StakedChunk {
             return UnstakeCondition.NOT_STAKED_UNOWNED;
         }
 
-        // Iterate through all of the chunks to find
+        // Iterate through all of the chunks to look through
         for (StakedChunk chunk : chunks) {
+            // If the chunks are not in the same world they're not contiguous.
+            if (!chunk.getWorldName().equals(worldName)) {
+                continue;
+            }
+
             if (chunk.coordX == coordX && chunk.coordZ == coordZ) {
                 // If the chunk is the only chunk owned, then they can unstake their last chunk.
                 if (chunks.size() == 1) {

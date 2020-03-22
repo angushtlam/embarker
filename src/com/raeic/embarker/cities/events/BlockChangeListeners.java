@@ -19,7 +19,7 @@ public class BlockChangeListeners implements Listener {
         Player p = event.getPlayer();
         Chunk chunk = event.getBlock().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -40,7 +40,7 @@ public class BlockChangeListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void handleBlockBurns(BlockBurnEvent event) {
         Chunk chunk = event.getBlock().getChunk();
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Blocks in staked chunks should not burn
         if (stakedChunk != null) {
@@ -53,7 +53,7 @@ public class BlockChangeListeners implements Listener {
         Player p = event.getPlayer();
         Chunk chunk = event.getBlock().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -82,7 +82,7 @@ public class BlockChangeListeners implements Listener {
         Player p = event.getPlayer();
         Chunk chunk = event.getBlock().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -105,7 +105,7 @@ public class BlockChangeListeners implements Listener {
         Player p = event.getPlayer();
         Chunk chunk = event.getBlock().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -132,7 +132,7 @@ public class BlockChangeListeners implements Listener {
         }
 
         Chunk chunk = event.getBlock().getChunk();
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Blocks in staked chunks should not burn
         if (stakedChunk != null) {
@@ -145,7 +145,7 @@ public class BlockChangeListeners implements Listener {
         Player p = event.getPlayer();
         Chunk chunk = event.getBlock().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ());
+        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -174,14 +174,14 @@ public class BlockChangeListeners implements Listener {
 
         if (chunkFirstBlockPlaced.getX() == chunkAdditionalBlockPlaced.getX() &&
             chunkFirstBlockPlaced.getZ() == chunkAdditionalBlockPlaced.getZ()) {
-            StakedChunk stakedChunk = StakedChunk.findOne(chunkFirstBlockPlaced.getX(), chunkFirstBlockPlaced.getZ());
+            StakedChunk stakedChunk = StakedChunk.findOne(chunkFirstBlockPlaced.getX(), chunkFirstBlockPlaced.getZ(), chunkFirstBlockPlaced.getWorld().getName());
 
             // Ignore if the chunk is not staked.
             if (stakedChunk != null) {
                 chunksToCheck.add(stakedChunk);
             }
         } else {
-            StakedChunk stakedChunk = StakedChunk.findOne(chunkAdditionalBlockPlaced.getX(), chunkAdditionalBlockPlaced.getZ());
+            StakedChunk stakedChunk = StakedChunk.findOne(chunkAdditionalBlockPlaced.getX(), chunkAdditionalBlockPlaced.getZ(), chunkAdditionalBlockPlaced.getWorld().getName());
 
             // Ignore if the chunk is not staked.
             if (stakedChunk != null) {
