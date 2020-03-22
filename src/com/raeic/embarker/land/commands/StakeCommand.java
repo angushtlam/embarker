@@ -1,7 +1,7 @@
-package com.raeic.embarker.cities.commands;
+package com.raeic.embarker.land.commands;
 
-import com.raeic.embarker.cities.enums.StakeCondition;
-import com.raeic.embarker.cities.models.StakedChunk;
+import com.raeic.embarker.land.enums.StakeCondition;
+import com.raeic.embarker.land.models.StakedChunk;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;

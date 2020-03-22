@@ -2,7 +2,6 @@ package com.raeic.embarker.auth.events;
 
 import com.raeic.embarker.auth.models.EmbarkerUser;
 import com.raeic.embarker.auth.state.ServerStartupState;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

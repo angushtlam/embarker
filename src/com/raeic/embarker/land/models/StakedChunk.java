@@ -1,8 +1,8 @@
-package com.raeic.embarker.cities.models;
+package com.raeic.embarker.land.models;
 
 import com.raeic.embarker.Embarker;
-import com.raeic.embarker.cities.enums.StakeCondition;
-import com.raeic.embarker.cities.enums.UnstakeCondition;
+import com.raeic.embarker.land.enums.StakeCondition;
+import com.raeic.embarker.land.enums.UnstakeCondition;
 import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
 

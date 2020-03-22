@@ -1,4 +1,4 @@
-package com.raeic.embarker.cities.enums;
+package com.raeic.embarker.land.enums;
 
 public enum UnstakeCondition {
     NOT_STAKED_UNOWNED,

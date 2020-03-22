@@ -2,11 +2,11 @@ package com.raeic.embarker;
 
 import com.raeic.embarker.auth.events.PlayerAuthListeners;
 import com.raeic.embarker.auth.state.ServerStartupState;
-import com.raeic.embarker.cities.commands.StakeCommand;
-import com.raeic.embarker.cities.commands.UnstakeCommand;
-import com.raeic.embarker.cities.events.BlockChangeListeners;
-import com.raeic.embarker.cities.events.EntityBlockChangeListeners;
-import com.raeic.embarker.cities.events.HangingChangeListeners;
+import com.raeic.embarker.land.commands.StakeCommand;
+import com.raeic.embarker.land.commands.UnstakeCommand;
+import com.raeic.embarker.land.events.BlockChangeListeners;
+import com.raeic.embarker.land.events.EntityBlockChangeListeners;
+import com.raeic.embarker.land.events.HangingChangeListeners;
 import com.raeic.embarker.db.DB;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
