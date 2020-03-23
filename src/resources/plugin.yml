@@ -14,3 +14,21 @@ commands:
   unstake:
     description: Unstake a chunk of land
     usage: /<command> (confirm)
+  disband:
+    description: Disband your party
+    usage: /<command> (confirm)
+  dismiss:
+    description: Dismiss a player from your party
+    usage: /<command> (confirm)
+  invite:
+    description: Invite a player to your party
+    usage: /<command> (confirm)
+  join:
+    description: Join a player's party
+    usage: /<command> (confirm)
+  leave:
+    description: Leave your party
+    usage: /<command> (confirm)
+  party:
+    description: Check the status of your party
+    usage: /<command>

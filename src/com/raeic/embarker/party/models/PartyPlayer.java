@@ -9,46 +9,45 @@ import java.sql.*;
 public class PartyPlayer {
     private String playerUniqueId;
     private String leaderUniqueId;
-    private boolean isPending;
 
-    public PartyPlayer(String playerUniqueId, String leaderUniqueId, boolean isPending) {
+    public PartyPlayer(String playerUniqueId, String leaderUniqueId) {
         this.playerUniqueId = playerUniqueId;
         this.leaderUniqueId = leaderUniqueId;
-        this.isPending = isPending;
-    }
-
-    public String getPlayerUniqueId() {
-        return playerUniqueId;
     }
 
     public String getLeaderUniqueId() {
         return leaderUniqueId;
     }
 
-    /**
-     * isPending means the player has not confirmed to join the party yet.
-     * @return
-     */
-    public boolean isPending() {
-        return isPending;
+    public void delete() {
+        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+            String sql = "delete from embarkerpartyplayer where playerUniqueId = ?";
+
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
+                values.setString(1, this.playerUniqueId);
+                values.executeUpdate();
+                values.closeOnCompletion();
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        });
     }
 
     public void save() {
         Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
             if (PartyPlayer.findOne(this.playerUniqueId) != null) {
                 String sql = "update embarkerpartyplayer " +
-                             "set " +
-                             "  leaderUniqueId = ?," +
-                             "  isPending = ? " +
-                             "where " +
-                             "  playerUniqueId = ?";
+                             "set leaderUniqueId = ? " +
+                             "where playerUniqueId = ?";
 
                 try {
                     Connection conn = DB.getConnection();
                     PreparedStatement values = conn.prepareStatement(sql);
                     values.setString(1, this.playerUniqueId);
-                    values.setBoolean(2, this.isPending);
-                    values.setString(3, this.leaderUniqueId);
+                    values.setString(2, this.leaderUniqueId);
                     values.executeUpdate();
                     values.closeOnCompletion();
 
@@ -58,16 +57,14 @@ public class PartyPlayer {
             } else {
                 String sql = "insert into embarkerpartyplayer(" +
                              "  playerUniqueId, " +
-                             "  leaderUniqueId," +
-                             "  isPending " +
-                             ") values(?, ?, ?)";
+                             "  leaderUniqueId" +
+                             ") values(?, ?)";
 
                 try {
                     Connection conn = DB.getConnection();
                     PreparedStatement values = conn.prepareStatement(sql);
                     values.setString(1, this.playerUniqueId);
                     values.setString(2, this.leaderUniqueId);
-                    values.setBoolean(3, this.isPending);
                     values.executeUpdate();
                     values.closeOnCompletion();
 
@@ -78,10 +75,24 @@ public class PartyPlayer {
         });
     }
 
+    public static boolean canInviteToParty(String playerUniqueId) {
+        PartyPlayer partyPlayer = PartyPlayer.findOne(playerUniqueId);
+
+        // If the player is not in a party, they can invite players to their party.
+        if (partyPlayer == null) {
+            return true;
+        }
+
+        if (PartyPlayer.isPlayerLeader(playerUniqueId)) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static PartyPlayer findOne(String playerUniqueId) {
         String sql = "select " +
-                     "  leaderUniqueId, " +
-                     "  isPending " +
+                     "  leaderUniqueId " +
                      "from embarkerpartyplayer " +
                      "where " +
                      "  playerUniqueId = '" + playerUniqueId + "' " +
@@ -93,7 +104,7 @@ public class PartyPlayer {
 
             // Should only be one result
             if (results.next()) {
-                return new PartyPlayer(playerUniqueId, results.getString("leaderUniqueId"), results.getBoolean("isPending"));
+                return new PartyPlayer(playerUniqueId, results.getString("leaderUniqueId"));
             }
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -109,7 +120,6 @@ public class PartyPlayer {
                      "from embarkerpartyplayer " +
                      "where playerUniqueId = '" + playerUniqueId + "' " +
                      "  and leaderUniqueId = '" + playerUniqueId + "' " +
-                     "  and isPending = false " +
                      "limit 1";
 
         try (Connection conn = DB.getConnection();
@@ -126,5 +136,30 @@ public class PartyPlayer {
         }
 
         return false;
+    }
+
+    /**
+     * This function neither checks if the old nor the new leader is in the existing party.
+     * @param oldLeaderUniqueId
+     * @param newLeaderUniqueId
+     */
+    public static void changeLeader(String oldLeaderUniqueId, String newLeaderUniqueId) {
+        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+            String sql = "update embarkerpartyplayer " +
+                         "set leaderUniqueId = ? " +
+                         "where leaderUniqueId = ?";
+
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
+                values.setString(1, oldLeaderUniqueId);
+                values.setString(2, newLeaderUniqueId);
+                values.executeUpdate();
+                values.closeOnCompletion();
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        });
     }
 }

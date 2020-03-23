@@ -1,13 +1,14 @@
 package com.raeic.embarker.party.models;
 
-import com.raeic.embarker.auth.models.EmbarkerUser;
+import com.raeic.embarker.Embarker;
 import com.raeic.embarker.db.DB;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class Party {
     String leaderUniqueId;
@@ -18,25 +19,54 @@ public class Party {
         this.partyPlayerUniqueIds = partyPlayerUniqueIds;
     }
 
+    public void disband() {
+        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+            String sql = "delete from embarkerpartyplayerinvite where leaderUniqueId = ?";
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
+                values.setString(1, this.leaderUniqueId);
+                values.executeUpdate();
+                values.closeOnCompletion();
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        });
+    }
+
     public String getLeaderUniqueId() {
         return leaderUniqueId;
     }
 
     /**
      * Party player list includes leader unique ID.
+     *
      * @return
      */
-    public ArrayList<String> getPartyPlayerUniqueIds() {
+    public ArrayList<String> getPartyPlayersUniqueId() {
         return partyPlayerUniqueIds;
     }
 
+    public ArrayList<String> getPartyPlayersName() {
+        ArrayList<String> memberNames = new ArrayList<>();
+
+        for (String memberUniqueId : this.getPartyPlayersUniqueId()) {
+            OfflinePlayer memberPlayer = Bukkit.getOfflinePlayer(UUID.fromString(memberUniqueId));
+            memberNames.add(memberPlayer.getName());
+        }
+
+        return memberNames;
+    }
+
     public static Party findParty(String playerLookupUniqueId) {
-        // If the player does not belong to a party or they are still pending, they do not belong to a party.
+        // Check if the player belong to a party first
         PartyPlayer player = PartyPlayer.findOne(playerLookupUniqueId);
-        if (player == null || player.isPending()) {
+        if (player == null) {
             return null;
         }
 
+        // Query by the party leader unique ID.
         String leaderLookupUniqueId;
         if (PartyPlayer.isPlayerLeader(playerLookupUniqueId)) {
             leaderLookupUniqueId = playerLookupUniqueId;
@@ -48,8 +78,7 @@ public class Party {
                      "  playerUniqueId " +
                      "from embarkerpartyplayer " +
                      "where " +
-                     "  leaderUniqueId = '" + leaderLookupUniqueId + "' " +
-                     "  and isPending = false";
+                     "  leaderUniqueId = '" + leaderLookupUniqueId + "' ";
 
         try (Connection conn = DB.getConnection();
              Statement statement = conn.createStatement();

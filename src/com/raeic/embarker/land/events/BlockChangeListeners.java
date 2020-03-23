@@ -1,6 +1,7 @@
 package com.raeic.embarker.land.events;
 
 import com.raeic.embarker.land.models.StakedChunk;
+import com.raeic.embarker.party.models.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -28,13 +29,20 @@ public class BlockChangeListeners implements Listener {
 
         UUID chunkOwnerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
 
-        // If the player does not have access to the chunk, they cannot modify it.
-        if (!p.getUniqueId().equals(chunkOwnerUniqueId)) {
-            event.setCancelled(true);
-
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        // If the player owns the chunk they can modify it.
+        if (p.getUniqueId().equals(chunkOwnerUniqueId)) {
+            return;
         }
+
+        // If the player is a part of a party, and someone in the party owns the chunk
+        Party party = Party.findParty(p.getUniqueId().toString());
+        if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
+            return;
+        }
+
+        event.setCancelled(true);
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
+        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -60,7 +68,7 @@ public class BlockChangeListeners implements Listener {
             return;
         }
 
-        // If the editing player doesn't exist, then it should not be editable.
+        // Player can be null here apparently. The non players cannot modify the chunk either.
         if (p == null) {
             event.setBuildable(false);
             return;
@@ -68,13 +76,21 @@ public class BlockChangeListeners implements Listener {
 
         UUID chunkOwnerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
 
-        // If the player does not have access to the chunk, they cannot modify it.
-        if (!p.getUniqueId().equals(chunkOwnerUniqueId)) {
-            event.setBuildable(false);
-
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        // If the player owns the chunk they can modify it.
+        if (p.getUniqueId().equals(chunkOwnerUniqueId)) {
+            return;
         }
+
+        // If the player is a part of a party, and someone in the party owns the chunk
+        Party party = Party.findParty(p.getUniqueId().toString());
+        if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
+            return;
+        }
+
+        event.setBuildable(false);
+
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
+        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -91,13 +107,21 @@ public class BlockChangeListeners implements Listener {
 
         UUID chunkOwnerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
 
-        // If the player does not have access to the chunk, they cannot modify it.
-        if (!p.getUniqueId().equals(chunkOwnerUniqueId)) {
-            event.setCancelled(true);
-
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        // If the player owns the chunk they can modify it.
+        if (p.getUniqueId().equals(chunkOwnerUniqueId)) {
+            return;
         }
+
+        // If the player is a part of a party, and someone in the party owns the chunk
+        Party party = Party.findParty(p.getUniqueId().toString());
+        if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
+        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -114,14 +138,22 @@ public class BlockChangeListeners implements Listener {
 
         UUID chunkOwnerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
 
-        // If the player does not have access to the chunk, they cannot modify it.
-        if (!p.getUniqueId().equals(chunkOwnerUniqueId)) {
-            event.setBuild(false);
-            event.setCancelled(true);
-
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        // If the player owns the chunk they can modify it.
+        if (p.getUniqueId().equals(chunkOwnerUniqueId)) {
+            return;
         }
+
+        // If the player is a part of a party, and someone in the party owns the chunk
+        Party party = Party.findParty(p.getUniqueId().toString());
+        if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
+            return;
+        }
+
+        event.setBuild(false);
+        event.setCancelled(true);
+
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
+        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -154,13 +186,21 @@ public class BlockChangeListeners implements Listener {
 
         UUID chunkOwnerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
 
-        // If the player does not have access to the chunk, they cannot modify it.
-        if (!p.getUniqueId().equals(chunkOwnerUniqueId)) {
-            event.setCancelled(true);
-
-            OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        // If the player owns the chunk they can modify it.
+        if (p.getUniqueId().equals(chunkOwnerUniqueId)) {
+            return;
         }
+
+        // If the player is a part of a party, and someone in the party owns the chunk
+        Party party = Party.findParty(p.getUniqueId().toString());
+        if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
+            return;
+        }
+
+        event.setCancelled(true);
+
+        OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
+        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -192,17 +232,24 @@ public class BlockChangeListeners implements Listener {
         for (StakedChunk stakedChunk : chunksToCheck) {
             UUID chunkOwnerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
 
-            // If the player does not have access to the chunk, they cannot modify it.
-            if (!p.getUniqueId().equals(chunkOwnerUniqueId)) {
-                event.setBuild(false);
-                event.setCancelled(true);
-
-                OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-                p.sendMessage("This chunk is staked by " + owner.getName() + ".");
-
-                // End early as one cancel here is enough.
+            // If the player owns the chunk they can modify it.
+            if (p.getUniqueId().equals(chunkOwnerUniqueId)) {
                 return;
             }
+
+            // If the player is a part of a party, and someone in the party owns the chunk
+            Party party = Party.findParty(p.getUniqueId().toString());
+            if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
+                return;
+            }
+
+            event.setBuild(false);
+            event.setCancelled(true);
+
+            OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
+            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+
+            return;
         }
     }
 }

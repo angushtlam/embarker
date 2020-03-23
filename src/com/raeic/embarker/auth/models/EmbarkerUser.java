@@ -23,6 +23,10 @@ public class EmbarkerUser {
         this(p.getName(), p.getUniqueId().toString(), new Timestamp(p.getFirstPlayed()), new Timestamp(p.getLastPlayed()));
     }
 
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
     public void setFirstLogin(Timestamp firstLogin) {
         this.firstLogin = firstLogin;
     }
@@ -36,7 +40,7 @@ public class EmbarkerUser {
     }
 
     public static EmbarkerUser findOne(String uniqueId) {
-        String sql = "select username, uniqueId, firstLogin, latestLogin from embarkeruser where uniqueId = '" + uniqueId + "' limit 1";
+        String sql = "select username, firstLogin, latestLogin from embarkeruser where uniqueId = '" + uniqueId + "' limit 1";
 
         String username = null;
         Timestamp firstLogin = null;
@@ -48,6 +52,33 @@ public class EmbarkerUser {
 
             while (results.next()) {
                 username = results.getString("username");
+                firstLogin = results.getTimestamp("firstLogin");
+                latestLogin = results.getTimestamp("latestLogin");
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            return null;
+        }
+
+        if (username == null || firstLogin == null || latestLogin == null) {
+            return null;
+        }
+
+        return new EmbarkerUser(username, uniqueId, firstLogin, latestLogin);
+    }
+
+    public static EmbarkerUser findOneByName(String name) {
+        String sql = "select uniqueId, firstLogin, latestLogin from embarkeruser where username = '" + name + "' limit 1";
+
+        String uniqueId = null;
+        Timestamp firstLogin = null;
+        Timestamp latestLogin = null;
+
+        try (Connection conn = DB.getConnection();
+             Statement statement = conn.createStatement();
+             ResultSet results = statement.executeQuery(sql)) {
+
+            while (results.next()) {
                 uniqueId = results.getString("uniqueId");
                 firstLogin = results.getTimestamp("firstLogin");
                 latestLogin = results.getTimestamp("latestLogin");
@@ -57,11 +88,11 @@ public class EmbarkerUser {
             return null;
         }
 
-        if (username == null || uniqueId == null || firstLogin == null || latestLogin == null) {
+        if (uniqueId == null || firstLogin == null || latestLogin == null) {
             return null;
         }
 
-        return new EmbarkerUser(username, uniqueId, firstLogin, latestLogin);
+        return new EmbarkerUser(name, uniqueId, firstLogin, latestLogin);
     }
 
     public void save() {

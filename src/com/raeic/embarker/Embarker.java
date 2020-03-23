@@ -2,12 +2,13 @@ package com.raeic.embarker;
 
 import com.raeic.embarker.auth.events.PlayerAuthListeners;
 import com.raeic.embarker.auth.state.ServerStartupState;
+import com.raeic.embarker.db.DB;
 import com.raeic.embarker.land.commands.StakeCommand;
 import com.raeic.embarker.land.commands.UnstakeCommand;
 import com.raeic.embarker.land.events.BlockChangeListeners;
 import com.raeic.embarker.land.events.EntityBlockChangeListeners;
 import com.raeic.embarker.land.events.HangingChangeListeners;
-import com.raeic.embarker.db.DB;
+import com.raeic.embarker.party.commands.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +26,13 @@ public class Embarker extends JavaPlugin {
         // Set up commands
         this.getCommand("stake").setExecutor(new StakeCommand());
         this.getCommand("unstake").setExecutor(new UnstakeCommand());
+
+        this.getCommand("disband").setExecutor(new DisbandCommand());
+        this.getCommand("dismiss").setExecutor(new DismissCommand());
+        this.getCommand("invite").setExecutor(new InviteCommand());
+        this.getCommand("join").setExecutor(new JoinCommand());
+        this.getCommand("leave").setExecutor(new LeaveCommand());
+        this.getCommand("party").setExecutor(new PartyCommand());
 
         // Set up listeners
         this.getServer().getPluginManager().registerEvents(new PlayerAuthListeners(), this);
