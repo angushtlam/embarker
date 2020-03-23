@@ -50,7 +50,7 @@ public class EmbarkerUser {
              Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery(sql)) {
 
-            while (results.next()) {
+            while (results != null && results.next()) {
                 username = results.getString("username");
                 firstLogin = results.getTimestamp("firstLogin");
                 latestLogin = results.getTimestamp("latestLogin");
@@ -78,7 +78,7 @@ public class EmbarkerUser {
              Statement statement = conn.createStatement();
              ResultSet results = statement.executeQuery(sql)) {
 
-            while (results.next()) {
+            while (results != null && results.next()) {
                 uniqueId = results.getString("uniqueId");
                 firstLogin = results.getTimestamp("firstLogin");
                 latestLogin = results.getTimestamp("latestLogin");

@@ -103,7 +103,7 @@ public class PartyPlayer {
              ResultSet results = statement.executeQuery(sql)) {
 
             // Should only be one result
-            if (results.next()) {
+            if (results != null && results.next()) {
                 return new PartyPlayer(playerUniqueId, results.getString("leaderUniqueId"));
             }
         } catch (SQLException ex) {
@@ -127,7 +127,7 @@ public class PartyPlayer {
              ResultSet results = statement.executeQuery(sql)) {
 
             // Should only be one result
-            if (results.next()) {
+            if (results != null && results.next()) {
                 return results.getInt("total") != 0;
             }
         } catch (SQLException ex) {

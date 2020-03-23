@@ -18,7 +18,7 @@ public class InviteCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 2 || args.length < 1 || (args.length == 2 && !args[1].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Usage: /invite <player> (confirm)");
-            return false;
+            return true;
         }
 
         if (!(sender instanceof Player)) {
@@ -61,7 +61,7 @@ public class InviteCommand implements CommandExecutor {
                 } else {
                     invite.setFirstCreated(new Timestamp(System.currentTimeMillis()));
                     p.sendMessage("Sent an invite again to " + playerToInvite.getName() + " to join your party!");
-                    playerToInvite.sendMessage(p.getName() + " invited you again to join their party!");
+                    playerToInvite.sendMessage(p.getName() + " invited you again to join their party! Enter /join " + p.getName() + " to join.");
 
                 }
 

@@ -16,12 +16,12 @@ public class LeaveCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 1 || (args.length == 1 && !args[0].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Usage: /leave (confirm)");
-            return false;
+            return true;
         }
 
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be ran by a player.");
-            return false;
+            return true;
         }
 
         Player p = (Player) sender;
@@ -56,11 +56,11 @@ public class LeaveCommand implements CommandExecutor {
 
             // Send the party a leaving message.
             for (String oldPartyPlayerUniqueId : oldPartyPlayersUniqueId) {
-                if (oldPartyPlayersUniqueId.equals(playerUniqueId)) {
+                if (oldPartyPlayerUniqueId.equals(playerUniqueId)) {
                     continue;
                 }
 
-                Player oldPartyPlayer = Bukkit.getPlayer(oldPartyPlayerUniqueId);
+                Player oldPartyPlayer = Bukkit.getPlayer(UUID.fromString(oldPartyPlayerUniqueId));
                 if (oldPartyPlayer != null && oldPartyPlayer.isOnline()) {
                     if (newLeaderName != null) {
                         oldPartyPlayer.sendMessage("Your party leader " + p.getName() + " left the party. " +
@@ -76,10 +76,14 @@ public class LeaveCommand implements CommandExecutor {
                 PartyPlayer.changeLeader(playerUniqueId, newLeaderUniqueId);
             }
 
-            // Finally delete the player.
-            PartyPlayer leavingPartyPlayer = PartyPlayer.findOne(playerUniqueId);
-            if (leavingPartyPlayer != null) {
-                leavingPartyPlayer.delete();
+            // Disband the party of there are only two players. Otherwise just remove the leaving player.
+            if (party.getPartyPlayersUniqueId().size() <= 2) {
+                party.disband();
+            } else {
+                PartyPlayer leavingPartyPlayer = PartyPlayer.findOne(playerUniqueId);
+                if (leavingPartyPlayer != null) {
+                    leavingPartyPlayer.delete();
+                }
             }
 
             p.sendMessage("You left your party.");

@@ -7,17 +7,19 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 public class DisbandCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 1 || (args.length == 1 && !args[0].equalsIgnoreCase("confirm"))) {
             sender.sendMessage("Usage: /disband (confirm)");
-            return false;
+            return true;
         }
 
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be ran by a player.");
-            return false;
+            return true;
         }
 
         Player p = (Player) sender;
@@ -36,7 +38,7 @@ public class DisbandCommand implements CommandExecutor {
 
         if (args.length == 1 && args[0].equalsIgnoreCase("confirm")) {
             for (String oldPartyPlayerUniqueId : party.getPartyPlayersUniqueId()) {
-                Player oldPartyPlayer = Bukkit.getPlayer(oldPartyPlayerUniqueId);
+                Player oldPartyPlayer = Bukkit.getPlayer(UUID.fromString(oldPartyPlayerUniqueId));
                 if (oldPartyPlayer != null && oldPartyPlayer.isOnline()) {
                     oldPartyPlayer.sendMessage(p.getName() + "'s party has been disbanded.");
                 }

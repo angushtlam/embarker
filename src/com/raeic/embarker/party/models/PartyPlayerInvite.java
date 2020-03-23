@@ -114,7 +114,7 @@ public class PartyPlayerInvite {
              ResultSet results = statement.executeQuery(sql)) {
 
             // Should only be one result
-            if (results.next()) {
+            if (results != null && results.next()) {
                 return new PartyPlayerInvite(senderUniqueId, receiverUniqueId, results.getTimestamp("firstCreated"));
             }
         } catch (SQLException ex) {
@@ -123,5 +123,21 @@ public class PartyPlayerInvite {
         }
 
         return null;
+    }
+
+    public static void deleteAllInvites(String senderUniqueId) {
+        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+            String sql = "delete from embarkerpartyplayerinvite where senderUniqueId = ?";
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
+                values.setString(1, senderUniqueId);
+                values.executeUpdate();
+                values.closeOnCompletion();
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        });
     }
 }

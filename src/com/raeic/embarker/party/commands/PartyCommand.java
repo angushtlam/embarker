@@ -15,7 +15,7 @@ public class PartyCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be ran by a player.");
-            return false;
+            return true;
         }
 
         Player p = (Player) sender;
@@ -37,7 +37,7 @@ public class PartyCommand implements CommandExecutor {
                           "and dismiss another player with /dismiss <player>.");
         } else {
             OfflinePlayer leaderPlayer = Bukkit.getOfflinePlayer(UUID.fromString(party.getLeaderUniqueId()));
-            p.sendMessage("You are in " + leaderPlayer + "'s party.");
+            p.sendMessage("You are in " + leaderPlayer.getName() + "'s party.");
             p.sendMessage("You can leave your party with /leave.");
         }
 

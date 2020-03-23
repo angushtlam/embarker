@@ -112,7 +112,7 @@ public class StakedChunk {
             ResultSet results = statement.executeQuery(sql);
 
             // There should only be zero or one row.
-            while (results.next()) {
+            while (results != null && results.next()) {
                 String ownerUniqueId = results.getString("ownerUniqueId");
                 Timestamp firstStaked = results.getTimestamp("firstStaked");
                 Timestamp lastUpdated = results.getTimestamp("lastUpdated");
@@ -141,7 +141,7 @@ public class StakedChunk {
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(sql);
 
-            while (results.next()) {
+            while (results != null && results.next()) {
                 int coordX = results.getInt("coordX");
                 int coordZ = results.getInt("coordZ");
                 String worldName = results.getString("worldName");
@@ -171,7 +171,7 @@ public class StakedChunk {
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(sql);
 
-            while (results.next()) {
+            while (results != null && results.next()) {
                 total = results.getInt("total");
             }
 
@@ -211,7 +211,7 @@ public class StakedChunk {
             Statement statement = conn.createStatement();
             ResultSet results = statement.executeQuery(sql);
 
-            while (results.next()) {
+            while (results != null && results.next()) {
                 total = results.getInt("total");
             }
 
