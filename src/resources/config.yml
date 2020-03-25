@@ -1,6 +1,6 @@
 db:
   driver: "com.mysql.jdbc.Driver"
-  url: "jdbc:mysql://198.245.51.96/db_106318"
-  username: "db_106318"
-  password: "68efb4dd0f"
+  url: "jdbc:mysql://localhost/database_name"
+  username: "root"
+  password: "password"
 
