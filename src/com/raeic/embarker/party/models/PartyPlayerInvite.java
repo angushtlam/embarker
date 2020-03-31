@@ -1,6 +1,6 @@
 package com.raeic.embarker.party.models;
 
-import com.raeic.embarker.Embarker;
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
 
@@ -33,7 +33,7 @@ public class PartyPlayerInvite {
      * This not only deletes the existing invite, it deletes all invites with the same sender and receiver.
      */
     public void delete() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             if (PartyPlayerInvite.findOne(this.senderUniqueId, this.receiverUniqueId) != null) {
                 String sql = "delete from embarkerpartyplayerinvite " +
                              "where " +
@@ -55,7 +55,7 @@ public class PartyPlayerInvite {
     }
 
     public void save() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             if (PartyPlayerInvite.findOne(this.senderUniqueId, this.receiverUniqueId) != null) {
                 String sql = "update embarkerpartyplayerinvite " +
                              "set " +
@@ -126,7 +126,7 @@ public class PartyPlayerInvite {
     }
 
     public static void deleteAllInvites(String senderUniqueId) {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerpartyplayerinvite where senderUniqueId = ?";
             try {
                 Connection conn = DB.getConnection();

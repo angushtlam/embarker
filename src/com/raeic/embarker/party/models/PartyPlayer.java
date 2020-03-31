@@ -1,6 +1,6 @@
 package com.raeic.embarker.party.models;
 
-import com.raeic.embarker.Embarker;
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
 
@@ -20,7 +20,7 @@ public class PartyPlayer {
     }
 
     public void delete() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerpartyplayer where playerUniqueId = ?";
 
             try {
@@ -37,7 +37,7 @@ public class PartyPlayer {
     }
 
     public void save() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             if (PartyPlayer.findOne(this.playerUniqueId) != null) {
                 String sql = "update embarkerpartyplayer " +
                              "set leaderUniqueId = ? " +
@@ -144,7 +144,7 @@ public class PartyPlayer {
      * @param newLeaderUniqueId
      */
     public static void changeLeader(String oldLeaderUniqueId, String newLeaderUniqueId) {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "update embarkerpartyplayer " +
                          "set leaderUniqueId = ? " +
                          "where leaderUniqueId = ?";

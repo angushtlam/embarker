@@ -1,6 +1,6 @@
 package com.raeic.embarker.party.models;
 
-import com.raeic.embarker.Embarker;
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -19,7 +19,7 @@ public class Party {
     }
 
     public void disband() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerpartyplayer where leaderUniqueId = ?";
             try {
                 Connection conn = DB.getConnection();

@@ -1,9 +1,9 @@
 package com.raeic.embarker.land.models;
 
-import com.raeic.embarker.Embarker;
+import com.raeic.embarker.Globals;
+import com.raeic.embarker.db.DB;
 import com.raeic.embarker.land.enums.StakeCondition;
 import com.raeic.embarker.land.enums.UnstakeCondition;
-import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
 
 import java.sql.*;
@@ -33,7 +33,7 @@ public class StakedChunk {
     }
 
     public void save() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             if (StakedChunk.findOne(this.coordX, this.coordZ, this.worldName) != null) {
                 String sql = "update embarkerstakedchunk set ownerUniqueId = ?, lastUpdated = ? where coordX = ? and coordZ = ? and worldName = ?";
 
@@ -72,7 +72,8 @@ public class StakedChunk {
     }
 
     public void delete() {
-        Bukkit.getScheduler().runTaskAsynchronously(Embarker.plugin, () -> {
+
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             if (StakedChunk.findOne(this.coordX, this.coordZ, this.worldName) != null) {
                 String sql = "delete from embarkerstakedchunk where coordX = ? and coordZ = ? and worldName = ? and ownerUniqueId = ?";
 
