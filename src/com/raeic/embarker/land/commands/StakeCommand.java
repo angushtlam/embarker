@@ -1,5 +1,6 @@
 package com.raeic.embarker.land.commands;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.land.enums.StakeCondition;
 import com.raeic.embarker.land.models.StakedChunk;
 import org.bukkit.Bukkit;
@@ -31,7 +32,7 @@ public class StakeCommand implements CommandExecutor {
         Player p = (Player) sender;
         Chunk chunk = p.getLocation().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+        StakedChunk stakedChunk = Globals.stakedChunks.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
         if (stakedChunk != null) {
             UUID ownerUniqueId = UUID.fromString(stakedChunk.getOwnerUniqueId());
@@ -47,11 +48,11 @@ public class StakeCommand implements CommandExecutor {
             }
         } else {
             String ownerUniqueId = p.getUniqueId().toString();
-            int totalOwned = StakedChunk.countOwnedBy(ownerUniqueId);
+            int totalOwned = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks().size();
             int cost = (int) Math.round(Math.pow(totalOwned + 1, 2));
             String emeraldPlurality = cost == 1 ? "Emerald" : "Emeralds";
 
-            StakeCondition condition = StakedChunk.canStake(ownerUniqueId, chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+            StakeCondition condition = Globals.stakedChunks.canStake(ownerUniqueId, chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
 
             if (args.length == 0) {
                 p.sendMessage("This chunk of land is unowned.");
@@ -107,8 +108,12 @@ public class StakeCommand implements CommandExecutor {
                     p.getInventory().remove(itemToRemove);
                 }
 
-                StakedChunk newStakedChunk = new StakedChunk(chunk.getX(), chunk.getZ(), chunk.getWorld().getName(), p.getUniqueId().toString());
-                newStakedChunk.save();
+                Globals.stakedChunks.create(
+                        chunk.getX(),
+                        chunk.getZ(),
+                        chunk.getWorld().getName(),
+                        p.getUniqueId().toString()
+                );
                 p.sendMessage("Confirmed! You paid " + cost + " " + emeraldPlurality + " to stake this chunk of land.");
             }
         }

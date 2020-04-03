@@ -1,5 +1,6 @@
 package com.raeic.embarker.land.events;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.land.models.StakedChunk;
 import com.raeic.embarker.party.models.Party;
 import org.bukkit.Bukkit;
@@ -28,7 +29,11 @@ public class HangingChangeListeners implements Listener {
         Hanging hanging = event.getEntity();
         Chunk chunk = hanging.getLocation().getChunk();
 
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+        StakedChunk stakedChunk = Globals.stakedChunks.findOne(
+                chunk.getX(),
+                chunk.getZ(),
+                chunk.getWorld().getName()
+        );
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {
@@ -63,7 +68,11 @@ public class HangingChangeListeners implements Listener {
         }
 
         Chunk chunk = event.getBlock().getChunk();
-        StakedChunk stakedChunk = StakedChunk.findOne(chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+        StakedChunk stakedChunk = Globals.stakedChunks.findOne(
+                chunk.getX(),
+                chunk.getZ(),
+                chunk.getWorld().getName()
+        );
 
         // Ignore if the chunk is not staked.
         if (stakedChunk == null) {

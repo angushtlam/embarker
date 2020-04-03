@@ -8,7 +8,9 @@ import com.raeic.embarker.land.commands.UnstakeCommand;
 import com.raeic.embarker.land.events.BlockChangeListeners;
 import com.raeic.embarker.land.events.EntityBlockChangeListeners;
 import com.raeic.embarker.land.events.HangingChangeListeners;
+import com.raeic.embarker.land.models.StakedChunkManager;
 import com.raeic.embarker.party.commands.*;
+import com.raeic.embarker.player.models.EmbarkerPlayerManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +22,10 @@ public class Embarker extends JavaPlugin {
         super.onEnable();
 
         Globals.plugin = this;
+
+        // Set up models
+        Globals.embarkerPlayers = new EmbarkerPlayerManager();
+        Globals.stakedChunks = new StakedChunkManager();
 
         // Set up commands
         this.getCommand("stake").setExecutor(new StakeCommand());

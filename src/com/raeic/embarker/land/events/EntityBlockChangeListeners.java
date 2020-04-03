@@ -1,5 +1,6 @@
 package com.raeic.embarker.land.events;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.land.models.StakedChunk;
 import org.bukkit.Chunk;
 import org.bukkit.block.Block;
@@ -36,7 +37,11 @@ public class EntityBlockChangeListeners implements Listener {
                 }
 
             } else {
-                StakedChunk stakedChunk = StakedChunk.findOne(coordX, coordZ, chunk.getWorld().getName());
+                StakedChunk stakedChunk = Globals.stakedChunks.findOne(
+                        chunk.getX(),
+                        chunk.getZ(),
+                        chunk.getWorld().getName()
+                );
                 if (stakedChunk != null) {
                     chunksOwnership.put(key, true);
                 } else {
