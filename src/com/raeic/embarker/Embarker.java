@@ -3,6 +3,7 @@ package com.raeic.embarker;
 import com.raeic.embarker.auth.events.PlayerAuthListeners;
 import com.raeic.embarker.auth.state.ServerStartupState;
 import com.raeic.embarker.db.DB;
+import com.raeic.embarker.land.commands.LandCommand;
 import com.raeic.embarker.land.commands.StakeCommand;
 import com.raeic.embarker.land.commands.UnstakeCommand;
 import com.raeic.embarker.land.events.BlockChangeListeners;
@@ -28,6 +29,7 @@ public class Embarker extends JavaPlugin {
         Globals.stakedChunks = new StakedChunkManager();
 
         // Set up commands
+        this.getCommand("land").setExecutor(new LandCommand());
         this.getCommand("stake").setExecutor(new StakeCommand());
         this.getCommand("unstake").setExecutor(new UnstakeCommand());
 

@@ -7,6 +7,9 @@ load: STARTUP
 author: Taurhuzz
 website: https://raeic.com
 commands:
+  land:
+    description: Check nearby lands
+    usage: /<command> (confirm)
   stake:
     description: Stake a chunk of land
     usage: /<command> (confirm)
