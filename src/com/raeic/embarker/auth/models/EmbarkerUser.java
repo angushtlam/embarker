@@ -7,10 +7,10 @@ import org.bukkit.OfflinePlayer;
 import java.sql.*;
 
 public class EmbarkerUser {
-    String username;
-    String uniqueId;
-    Timestamp firstLogin;
-    Timestamp latestLogin;
+    private String username;
+    private String uniqueId;
+    private Timestamp firstLogin;
+    private Timestamp latestLogin;
 
     public EmbarkerUser(String username, String uniqueId, Timestamp firstLogin, Timestamp latestLogin) {
         this.username = username;
@@ -21,6 +21,10 @@ public class EmbarkerUser {
 
     public EmbarkerUser(OfflinePlayer p) {
         this(p.getName(), p.getUniqueId().toString(), new Timestamp(p.getFirstPlayed()), new Timestamp(p.getLastPlayed()));
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public String getUniqueId() {

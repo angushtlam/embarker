@@ -1,6 +1,7 @@
 package com.raeic.embarker.party.models;
 
 import com.raeic.embarker.Globals;
+import com.raeic.embarker.auth.models.EmbarkerUser;
 import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -51,8 +52,10 @@ public class Party {
         ArrayList<String> memberNames = new ArrayList<>();
 
         for (String memberUniqueId : this.getPartyPlayersUniqueId()) {
-            OfflinePlayer memberPlayer = Bukkit.getOfflinePlayer(UUID.fromString(memberUniqueId));
-            memberNames.add(memberPlayer.getName());
+            EmbarkerUser u = EmbarkerUser.findOne(memberUniqueId);
+            if (u != null) {
+                memberNames.add(u.getUsername());
+            }
         }
 
         return memberNames;
