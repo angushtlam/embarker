@@ -10,6 +10,7 @@ import com.raeic.embarker.utils.LRUCache;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class StakedChunkManager implements StakedChunkManagerInterface {
@@ -121,7 +122,7 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
     public UnstakeCondition canUnstake(String ownerUniqueId, int coordX, int coordZ, String worldName) {
         // We're building an adjacency list of chunks that exist.
         HashMap<Integer, LinkedList<Integer>> adjacencyList = new HashMap<>();
-        ArrayList<StakedChunk> chunks = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks();
+        HashSet<StakedChunk> chunks = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks();
 
         // If there are no staked chunks, the player cannot unstake anything.
         if (chunks.size() < 1) {

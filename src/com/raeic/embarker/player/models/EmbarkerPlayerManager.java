@@ -6,7 +6,7 @@ import com.raeic.embarker.land.models.StakedChunk;
 import com.raeic.embarker.utils.LRUCache;
 
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class EmbarkerPlayerManager implements EmbarkerPlayerManagerInterface {
     private static final int CACHE_NUM_OF_OBJECT = 1000000;
@@ -39,7 +39,7 @@ public class EmbarkerPlayerManager implements EmbarkerPlayerManagerInterface {
             ResultSet results = statement.executeQuery(sql);
 
             if (results != null) {
-                ArrayList<StakedChunk> stakedChunks = new ArrayList<>();
+                HashSet<StakedChunk> stakedChunks = new HashSet<>();
 
                 while (results.next()) {
                     int coordX = results.getInt("coordX");
