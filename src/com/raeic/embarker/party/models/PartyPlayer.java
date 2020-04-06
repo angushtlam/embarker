@@ -98,20 +98,28 @@ public class PartyPlayer {
                      "  playerUniqueId = '" + playerUniqueId + "' " +
                      "limit 1";
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        PartyPlayer result = null;
+
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
             // Should only be one result
-            if (results != null && results.next()) {
-                return new PartyPlayer(playerUniqueId, results.getString("leaderUniqueId"));
+            if (results != null) {
+                while (results.next()) {
+                    result = new PartyPlayer(playerUniqueId, results.getString("leaderUniqueId"));
+                }
+                results.close();
             }
+            statement.close();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return null;
         }
 
-        return null;
+        return result;
     }
 
     public static boolean isPlayerLeader(String playerUniqueId) {
@@ -122,20 +130,29 @@ public class PartyPlayer {
                      "  and leaderUniqueId = '" + playerUniqueId + "' " +
                      "limit 1";
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        boolean result = false;
+
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
             // Should only be one result
-            if (results != null && results.next()) {
-                return results.getInt("total") != 0;
+            if (results != null) {
+                while (results.next()) {
+                    result = results.getInt("total") != 0;
+                }
+
+                results.close();
             }
+            statement.close();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return false;
         }
 
-        return false;
+        return result;
     }
 
     /**

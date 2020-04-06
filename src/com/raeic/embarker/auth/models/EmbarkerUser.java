@@ -50,15 +50,22 @@ public class EmbarkerUser {
         Timestamp firstLogin = null;
         Timestamp latestLogin = null;
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
-            while (results != null && results.next()) {
-                username = results.getString("username");
-                firstLogin = results.getTimestamp("firstLogin");
-                latestLogin = results.getTimestamp("latestLogin");
+            if (results != null) {
+                while (results.next()) {
+                    username = results.getString("username");
+                    firstLogin = results.getTimestamp("firstLogin");
+                    latestLogin = results.getTimestamp("latestLogin");
+                }
+
+                results.close();
             }
+            statement.close();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return null;
@@ -78,15 +85,21 @@ public class EmbarkerUser {
         Timestamp firstLogin = null;
         Timestamp latestLogin = null;
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
-            while (results != null && results.next()) {
-                uniqueId = results.getString("uniqueId");
-                firstLogin = results.getTimestamp("firstLogin");
-                latestLogin = results.getTimestamp("latestLogin");
+            if (results != null) {
+                while (results.next()) {
+                    uniqueId = results.getString("uniqueId");
+                    firstLogin = results.getTimestamp("firstLogin");
+                    latestLogin = results.getTimestamp("latestLogin");
+                }
+                results.close();
             }
+            statement.close();
+
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return null;

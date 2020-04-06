@@ -80,15 +80,20 @@ public class Party {
                      "where " +
                      "  leaderUniqueId = '" + leaderLookupUniqueId + "' ";
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
-
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
+        
             ArrayList<String> partyPlayerUniqueIds = new ArrayList<>();
 
-            while (results != null && results.next()) {
-                partyPlayerUniqueIds.add(results.getString("playerUniqueId"));
+            if (results != null) {
+                while (results.next()) {
+                    partyPlayerUniqueIds.add(results.getString("playerUniqueId"));
+                }
+                results.close();
             }
+            statement.close();
 
             // Only return a party if there are more than one entry.
             if (partyPlayerUniqueIds.size() > 0) {

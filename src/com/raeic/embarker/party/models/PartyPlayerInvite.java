@@ -109,20 +109,28 @@ public class PartyPlayerInvite {
                      "order by firstCreated desc " +
                      "limit 1";
 
-        try (Connection conn = DB.getConnection();
-             Statement statement = conn.createStatement();
-             ResultSet results = statement.executeQuery(sql)) {
+        PartyPlayerInvite result = null;
+
+        try {
+            Connection conn = DB.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet results = statement.executeQuery(sql);
 
             // Should only be one result
-            if (results != null && results.next()) {
-                return new PartyPlayerInvite(senderUniqueId, receiverUniqueId, results.getTimestamp("firstCreated"));
+            if (results != null) {
+                while (results.next()) {
+                    result = new PartyPlayerInvite(senderUniqueId, receiverUniqueId, results.getTimestamp("firstCreated"));
+                }
+                results.close();
             }
+            statement.close();
+            
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return null;
         }
 
-        return null;
+        return result;
     }
 
     public static void deleteAllInvites(String senderUniqueId) {
