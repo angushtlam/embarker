@@ -4,13 +4,10 @@ import com.raeic.embarker.Globals;
 import com.raeic.embarker.db.DB;
 import com.raeic.embarker.land.enums.StakeCondition;
 import com.raeic.embarker.land.enums.UnstakeCondition;
-import com.raeic.embarker.player.models.EmbarkerPlayer;
 import com.raeic.embarker.utils.LRUCache;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 public class StakedChunkManager implements StakedChunkManagerInterface {
@@ -22,8 +19,9 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
         cache = new LRUCache<>(CACHE_NUM_OF_OBJECT);
     }
 
-    public LRUCache<String, StakedChunk> getCache() {
-        return cache;
+    @Override
+    public void invalidateCacheByKey(String key) {
+        cache.remove(key);
     }
 
     @Override
@@ -40,13 +38,6 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
         if (cache.containsKey(stakedChunkCacheKey)) {
             stakedChunk = cache.get(stakedChunkCacheKey);
 
-            // Also remove the chunk from the EmbarkerPlayer if it's changed.
-            if (!ownerUniqueId.equals(stakedChunk.getOwnerUniqueId())) {
-                EmbarkerPlayer p = Globals.embarkerPlayers.findOne(stakedChunk.getOwnerUniqueId());
-                p.getStakedChunks().remove(stakedChunk);
-            }
-
-            stakedChunk.setDeleted(false);
             stakedChunk.setCoordX(coordX);
             stakedChunk.setCoordZ(coordZ);
             stakedChunk.setWorldName(worldName);
@@ -56,13 +47,13 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
 
         } else {
             stakedChunk = new StakedChunk(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
-
-            // Add the staked chunk to the EmbarkerPlayer
-            EmbarkerPlayer p = Globals.embarkerPlayers.findOne(stakedChunk.getOwnerUniqueId());
-            p.getStakedChunks().add(stakedChunk);
+            cache.put(stakedChunkCacheKey, stakedChunk);
         }
 
         stakedChunk.save();
+
+        // Also, invalidate the EmbarkerPlayer cache because it's no longer accurate on write
+        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
 
         return stakedChunk;
     }
@@ -110,11 +101,6 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
             return null;
         }
 
-        // Finally add the fetched object to the cache.
-        if (result != null) {
-            cache.put(cacheKey, result);
-        }
-
         return result;
     }
 
@@ -122,10 +108,10 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
     public UnstakeCondition canUnstake(String ownerUniqueId, int coordX, int coordZ, String worldName) {
         // We're building an adjacency list of chunks that exist.
         HashMap<Integer, LinkedList<Integer>> adjacencyList = new HashMap<>();
-        HashSet<StakedChunk> chunks = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks();
+        StakedChunk[] chunks = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks();
 
         // If there are no staked chunks, the player cannot unstake anything.
-        if (chunks.size() < 1) {
+        if (chunks.length < 1) {
             return UnstakeCondition.NOT_STAKED_UNOWNED;
         }
 
@@ -138,7 +124,7 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
 
             if (chunk.getCoordX() == coordX && chunk.getCoordZ() == coordZ) {
                 // If the chunk is the only chunk owned, then they can unstake their last chunk.
-                if (chunks.size() == 1) {
+                if (chunks.length == 1) {
                     return UnstakeCondition.CAN_UNSTAKE;
                 }
 
@@ -220,7 +206,7 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
             }
         }
 
-        if (chunksTraveled != chunks.size() - 1) {
+        if (chunksTraveled != chunks.length - 1) {
             return UnstakeCondition.NO_ADJACENT;
         }
 
@@ -233,7 +219,7 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
             return StakeCondition.ALREADY_STAKED;
         }
 
-        if (Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks().size() == 0) {
+        if (Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks().length == 0) {
             return StakeCondition.CAN_STAKE;
         }
 
@@ -246,8 +232,8 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
         }
 
         for (int z = -1; z <= 1; z++) {
-            StakedChunk adjacentXChunk = findOne(coordX, coordZ + z, worldName);
-            if (adjacentXChunk != null && ownerUniqueId.equals(adjacentXChunk.getOwnerUniqueId())) {
+            StakedChunk adjacentZChunk = findOne(coordX, coordZ + z, worldName);
+            if (adjacentZChunk != null && ownerUniqueId.equals(adjacentZChunk.getOwnerUniqueId())) {
                 return StakeCondition.CAN_STAKE;
             }
         }

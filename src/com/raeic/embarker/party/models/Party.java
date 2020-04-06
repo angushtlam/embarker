@@ -4,11 +4,9 @@ import com.raeic.embarker.Globals;
 import com.raeic.embarker.auth.models.EmbarkerUser;
 import com.raeic.embarker.db.DB;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class Party {
     String leaderUniqueId;

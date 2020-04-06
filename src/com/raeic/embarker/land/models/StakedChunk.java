@@ -11,7 +11,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 public class StakedChunk implements ModelClass {
-    private boolean isDeleted;
     private int coordX;
     private int coordZ;
     private String worldName;
@@ -20,22 +19,12 @@ public class StakedChunk implements ModelClass {
     private Timestamp lastUpdated;
 
     public StakedChunk(int coordX, int coordZ, String worldName, String ownerUniqueId, Timestamp firstStaked, Timestamp lastUpdated) {
-        this.isDeleted = false;
         this.coordX = coordX;
         this.coordZ = coordZ;
         this.worldName = worldName;
         this.ownerUniqueId = ownerUniqueId;
         this.firstStaked = firstStaked;
         this.lastUpdated = lastUpdated;
-    }
-
-    @Override
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     public int getCoordX() {
@@ -126,26 +115,27 @@ public class StakedChunk implements ModelClass {
     }
 
     public void delete() {
-        this.isDeleted = true;
+        // Also, invalidate caches because it's no longer accurate on write
+        String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
+        Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
+        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
 
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
-            if (Globals.stakedChunks.findOne(this.coordX, this.coordZ, this.worldName) != null) {
-                String sql = "delete from embarkerstakedchunk " +
-                             "where coordX = ? and coordZ = ? and worldName = ? and ownerUniqueId = ?";
+            String sql = "delete from embarkerstakedchunk " +
+                         "where coordX = ? and coordZ = ? and worldName = ? and ownerUniqueId = ?";
 
-                try {
-                    Connection conn = DB.getConnection();
-                    PreparedStatement values = conn.prepareStatement(sql);
-                    values.setInt(1, this.coordX);
-                    values.setInt(2, this.coordZ);
-                    values.setString(3, this.ownerUniqueId);
-                    values.setString(4, this.worldName);
-                    values.executeUpdate();
-                    values.closeOnCompletion();
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
+                values.setInt(1, this.coordX);
+                values.setInt(2, this.coordZ);
+                values.setString(3, this.worldName);
+                values.setString(4, this.ownerUniqueId);
+                values.executeUpdate();
+                values.closeOnCompletion();
 
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
-                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
             }
         });
     }

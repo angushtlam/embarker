@@ -2,12 +2,11 @@ package com.raeic.embarker.land.models;
 
 import com.raeic.embarker.land.enums.StakeCondition;
 import com.raeic.embarker.land.enums.UnstakeCondition;
-import com.raeic.embarker.utils.LRUCache;
 
 import java.sql.Timestamp;
 
 public interface StakedChunkManagerInterface {
-    LRUCache<String, StakedChunk> getCache();
+    void invalidateCacheByKey(String key);
 
     StakeCondition canStake(String ownerUniqueId, int coordX, int coordZ, String worldName);
     UnstakeCondition canUnstake(String ownerUniqueId, int coordX, int coordZ, String worldName);

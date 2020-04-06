@@ -17,13 +17,25 @@ public class DB {
         DB.password = password;
     }
 
-    public static Connection getConnection() throws SQLException {
+    public static Connection getConnection(int retries) throws SQLException {
         // We're gonna reuse the same connection. Try not to close it.
-        if (DB.cachedConnection == null || DB.cachedConnection.isClosed()) {
-            DB.cachedConnection = DriverManager.getConnection(DB.url, DB.username, DB.password);
+        try {
+            if (DB.cachedConnection == null || DB.cachedConnection.isClosed()) {
+                DB.cachedConnection = DriverManager.getConnection(DB.url, DB.username, DB.password);
+            }
+        } catch (SQLException e) {
+            if (retries == 0) {
+                throw e;
+            }
+
+            return getConnection(retries - 1);
         }
 
         return DB.cachedConnection;
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return getConnection(3);
     }
 
     public static void closeConnection() {

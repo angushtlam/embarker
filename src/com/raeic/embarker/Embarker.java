@@ -11,6 +11,8 @@ import com.raeic.embarker.land.events.EntityBlockChangeListeners;
 import com.raeic.embarker.land.events.HangingChangeListeners;
 import com.raeic.embarker.land.models.StakedChunkManager;
 import com.raeic.embarker.party.commands.*;
+import com.raeic.embarker.player.commands.DebugCommand;
+import com.raeic.embarker.player.events.PlayerLoadListeners;
 import com.raeic.embarker.player.models.EmbarkerPlayerManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,6 +31,8 @@ public class Embarker extends JavaPlugin {
         Globals.stakedChunks = new StakedChunkManager();
 
         // Set up commands
+        this.getCommand("debug").setExecutor(new DebugCommand());
+
         this.getCommand("land").setExecutor(new LandCommand());
         this.getCommand("stake").setExecutor(new StakeCommand());
         this.getCommand("unstake").setExecutor(new UnstakeCommand());
@@ -42,9 +46,12 @@ public class Embarker extends JavaPlugin {
 
         // Set up listeners
         this.getServer().getPluginManager().registerEvents(new PlayerAuthListeners(), this);
+
         this.getServer().getPluginManager().registerEvents(new BlockChangeListeners(), this);
         this.getServer().getPluginManager().registerEvents(new EntityBlockChangeListeners(), this);
         this.getServer().getPluginManager().registerEvents(new HangingChangeListeners(), this);
+
+        this.getServer().getPluginManager().registerEvents(new PlayerLoadListeners(), this);
 
         // Get plugin file configuration
         FileConfiguration pluginConfig = this.getConfig();

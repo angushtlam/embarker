@@ -7,6 +7,9 @@ load: STARTUP
 author: Taurhuzz
 website: https://raeic.com
 commands:
+  debug:
+    description: For debugging purposes
+    usage: /<command>
   land:
     description: Check nearby lands
     usage: /<command> (confirm)

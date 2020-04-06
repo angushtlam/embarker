@@ -18,20 +18,23 @@ public class EmbarkerPlayerManager implements EmbarkerPlayerManagerInterface {
     }
 
     @Override
+    public void invalidateCacheByKey(String uniqueId) {
+        cache.remove(uniqueId);
+    }
+
+    @Override
     public EmbarkerPlayer findOne(String uniqueId) {
         // Check if the cache contains the object. If it does, just return it from the cache.
         if (cache.containsKey(uniqueId)) {
             return cache.get(uniqueId);
         }
-
-        // Add the object to the cache first, then modify it.
-        EmbarkerPlayer result = new EmbarkerPlayer(uniqueId);
-        cache.put(uniqueId, result);
-
+        
         String sql = "select " +
                      "  coordX, coordZ, worldName, firstStaked, lastUpdated " +
                      "from embarkerstakedchunk " +
                      "where ownerUniqueId = '" + uniqueId + "'";
+
+        EmbarkerPlayer result = null;
 
         try {
             Connection conn = DB.getConnection();
@@ -48,7 +51,7 @@ public class EmbarkerPlayerManager implements EmbarkerPlayerManagerInterface {
                     Timestamp firstStaked = results.getTimestamp("firstStaked");
                     Timestamp lastUpdated = results.getTimestamp("lastUpdated");
 
-                    // Add the cached chunk if it's there, otherwise make a new one and cache it.
+                    // Add the cached chunk if it's there, otherwise make a new one.
                     StakedChunk newStakedChunk = Globals.stakedChunks.findOne(coordX, coordZ, worldName);
                     if (newStakedChunk != null) {
                         stakedChunks.add(newStakedChunk);
@@ -57,7 +60,8 @@ public class EmbarkerPlayerManager implements EmbarkerPlayerManagerInterface {
                     }
                 }
 
-                result.setStakedChunks(stakedChunks);
+                result = new EmbarkerPlayer(uniqueId, stakedChunks);
+                cache.put(uniqueId, result);
                 results.close();
             }
             statement.close();

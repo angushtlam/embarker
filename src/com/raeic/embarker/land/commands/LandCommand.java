@@ -2,6 +2,7 @@ package com.raeic.embarker.land.commands;
 
 import com.raeic.embarker.Globals;
 import com.raeic.embarker.land.models.StakedChunk;
+import com.raeic.embarker.party.models.Party;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,15 +26,21 @@ public class LandCommand implements CommandExecutor {
 
         StringBuilder mapString = new StringBuilder();
 
+        // If the player is a part of a party, and someone in the party owns the chunk
+        Party party = Party.findParty(p.getUniqueId().toString());
+
         for (int x = playerX - 3; x <= playerX + 3; x++) {
             for (int z = playerZ - 9; z <= playerZ + 9; z++) {
                 String chunkString;
 
                 StakedChunk stakedChunk = Globals.stakedChunks.findOne(x, z, worldName);
-                if (stakedChunk == null || stakedChunk.isDeleted()) {
+
+                if (stakedChunk == null) {
                     chunkString = "▁";
                 } else if (playerUniqueId.equals(stakedChunk.getOwnerUniqueId())) {
                     chunkString = "▒";
+                } else if (party != null && party.getPartyPlayersUniqueId().contains(stakedChunk.getOwnerUniqueId())) {
+                    chunkString = "▚";
                 } else {
                     chunkString = "█";
                 }
@@ -50,7 +57,7 @@ public class LandCommand implements CommandExecutor {
 
         p.sendMessage("Nearby land:");
         p.sendMessage(mapString.toString());
-        p.sendMessage("▁ Unowned, ▒ Your land, █ Staked by others");
+        p.sendMessage("▁ Unowned, ▒ Your land, █ Staked, ▚ Party");
 
         return true;
     }

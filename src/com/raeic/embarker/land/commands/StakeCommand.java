@@ -48,7 +48,7 @@ public class StakeCommand implements CommandExecutor {
             }
         } else {
             String ownerUniqueId = p.getUniqueId().toString();
-            int totalOwned = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks().size();
+            int totalOwned = Globals.embarkerPlayers.findOne(ownerUniqueId).getStakedChunks().length;
             int cost = (int) Math.round(Math.pow(totalOwned + 1, 2));
             String emeraldPlurality = cost == 1 ? "Emerald" : "Emeralds";
 
