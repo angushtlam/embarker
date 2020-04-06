@@ -12,18 +12,6 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
     }
 
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        V value = eldest.getValue();
-        if (value instanceof ModelClass) {
-            ModelClass modelClass = ((ModelClass) value);
-
-            // Delete it from the database if the model is deleted, otherwise save it
-            if (modelClass.isDeleted()) {
-                modelClass.delete();
-            } else {
-                modelClass.save();
-            }
-        }
-
         return size() >= cacheSize;
     }
 }
