@@ -69,7 +69,7 @@ public class StakedChunk implements ModelClass {
 
     public void save() {
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
-            if (Globals.stakedChunks.findOne(this.coordX, this.coordZ, this.worldName) != null) {
+            if (Globals.stakedChunks.findOneIgnoreCache(this.coordX, this.coordZ, this.worldName) != null) {
                 String sql = "update embarkerstakedchunk " +
                              "set " +
                              "  ownerUniqueId = ?, " +

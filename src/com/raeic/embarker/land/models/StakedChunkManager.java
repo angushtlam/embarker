@@ -38,9 +38,6 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
         if (cache.containsKey(stakedChunkCacheKey)) {
             stakedChunk = cache.get(stakedChunkCacheKey);
 
-            stakedChunk.setCoordX(coordX);
-            stakedChunk.setCoordZ(coordZ);
-            stakedChunk.setWorldName(worldName);
             stakedChunk.setOwnerUniqueId(ownerUniqueId);
             stakedChunk.setFirstStaked(firstStaked);
             stakedChunk.setLastUpdated(lastUpdated);
@@ -67,6 +64,11 @@ public class StakedChunkManager implements StakedChunkManagerInterface {
             return cache.get(cacheKey);
         }
 
+        return findOneIgnoreCache(coordX, coordZ, worldName);
+    }
+
+    @Override
+    public StakedChunk findOneIgnoreCache(int coordX, int coordZ, String worldName) {
         String sql = "select " +
                      "  ownerUniqueId, firstStaked, lastUpdated " +
                      "from embarkerstakedchunk " +
