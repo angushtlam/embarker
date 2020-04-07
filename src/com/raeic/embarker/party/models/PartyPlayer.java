@@ -169,8 +169,8 @@ public class PartyPlayer {
             try {
                 Connection conn = DB.getConnection();
                 PreparedStatement values = conn.prepareStatement(sql);
-                values.setString(1, oldLeaderUniqueId);
-                values.setString(2, newLeaderUniqueId);
+                values.setString(1, newLeaderUniqueId);
+                values.setString(2, oldLeaderUniqueId);
                 values.executeUpdate();
                 values.closeOnCompletion();
 
