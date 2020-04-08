@@ -4,26 +4,13 @@ import com.raeic.embarker.Globals;
 import com.raeic.embarker.db.DB;
 import com.raeic.embarker.land.enums.StakeCondition;
 import com.raeic.embarker.land.enums.UnstakeCondition;
-import com.raeic.embarker.utils.LRUCache;
+import com.raeic.embarker.utils.CachedModel;
 
 import java.sql.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class StakedChunkManager implements StakedChunkManagerInterface {
-    private static final int CACHE_NUM_OF_OBJECT = 1000000;
-
-    private LRUCache<String, StakedChunk> cache;
-
-    public StakedChunkManager() {
-        cache = new LRUCache<>(CACHE_NUM_OF_OBJECT);
-    }
-
-    @Override
-    public void invalidateCacheByKey(String key) {
-        cache.remove(key);
-    }
-
+public class StakedChunkManager extends CachedModel implements StakedChunkManagerInterface {
     @Override
     public StakedChunk create(int coordX, int coordZ, String worldName, String ownerUniqueId) {
         return create(coordX, coordZ, worldName, ownerUniqueId, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));

@@ -6,8 +6,6 @@ import com.raeic.embarker.land.enums.UnstakeCondition;
 import java.sql.Timestamp;
 
 public interface StakedChunkManagerInterface {
-    void invalidateCacheByKey(String key);
-
     StakeCondition canStake(String ownerUniqueId, int coordX, int coordZ, String worldName);
     UnstakeCondition canUnstake(String ownerUniqueId, int coordX, int coordZ, String worldName);
     StakedChunk create(int coordX, int coordZ, String worldName, String ownerUniqueId);
