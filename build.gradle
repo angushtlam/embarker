@@ -7,8 +7,7 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
-    maven { url "https://maven.enginehub.org/repo/" }
+    maven { url "https://papermc.io/repo/repository/maven-public/" }
 }
 
 compileJava {
@@ -41,7 +40,7 @@ sourceSets {
 
 dependencies {
     compile 'mysql:mysql-connector-java:8.0.11'
-    compileOnly 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
+    compileOnly 'com.destroystokyo.paper:paper-api:1.15.2-R0.1-SNAPSHOT'
 }
 
 jar {
@@ -52,6 +51,7 @@ jar {
 
 shadowJar {
     dependencies {
+        exclude 'com.destroystokyo.paper:paper-api:.*'
         exclude 'org.spigotmc:spigot-api:.*'
         exclude 'org.spigotmc:spigot:.*'
         exclude 'org.bukkit:bukkit:.*'

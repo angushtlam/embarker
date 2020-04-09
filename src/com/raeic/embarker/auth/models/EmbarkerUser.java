@@ -20,7 +20,7 @@ public class EmbarkerUser {
     }
 
     public EmbarkerUser(OfflinePlayer p) {
-        this(p.getName(), p.getUniqueId().toString(), new Timestamp(p.getFirstPlayed()), new Timestamp(p.getLastPlayed()));
+        this(p.getName(), p.getUniqueId().toString(), new Timestamp(p.getFirstPlayed()), new Timestamp(p.getLastLogin()));
     }
 
     public String getUsername() {
