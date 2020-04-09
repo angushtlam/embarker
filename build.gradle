@@ -34,6 +34,8 @@ sourceSets {
 dependencies {
     compile 'mysql:mysql-connector-java:8.0.11'
     compileOnly 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
+
+    testCompile 'org.junit.jupiter:junit-jupiter:5.6.1'
 }
 
 jar {
@@ -49,4 +51,8 @@ shadowJar {
         exclude 'org.bukkit:bukkit:.*'
         exclude 'com.sk89q.worldguard:worldguard-bukkit:.*'
     }
+}
+
+test {
+    useJUnitPlatform()
 }
