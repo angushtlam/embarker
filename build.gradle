@@ -24,14 +24,6 @@ idea {
 }
 
 sourceSets {
-    main {
-        java {
-            srcDir 'src'
-        }
-        resources {
-            srcDir 'src/resources'
-        }
-    }
     generated {
         java {
             srcDir 'build/generated/sources/annotationProcessor'
