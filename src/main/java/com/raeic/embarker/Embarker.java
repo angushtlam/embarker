@@ -15,11 +15,25 @@ import com.raeic.embarker.player.commands.DebugCommand;
 import com.raeic.embarker.player.events.PlayerLoadListeners;
 import com.raeic.embarker.player.models.EmbarkerPlayerManager;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
+import java.io.File;
 import java.sql.SQLException;
 
 public class Embarker extends JavaPlugin {
+    public Embarker() {
+        super();
+    }
+
+    /**
+     * This constructor is needed for MockBukkit
+     */
+    public Embarker(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
+
     @Override
     public void onEnable() {
         super.onEnable();

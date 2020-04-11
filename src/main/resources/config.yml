@@ -3,4 +3,3 @@ db:
   url: "jdbc:mysql://localhost/database_name"
   username: "root"
   password: "password"
-
