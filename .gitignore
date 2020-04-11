@@ -97,3 +97,6 @@ gradle-app.setting
 .project
 .settings
 .vscode
+
+# Sensitive files
+/src/main/resources/config.yml
