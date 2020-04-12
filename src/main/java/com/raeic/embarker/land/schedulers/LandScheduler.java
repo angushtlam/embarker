@@ -2,10 +2,10 @@ package com.raeic.embarker.land.schedulers;
 
 import com.raeic.embarker.Globals;
 import com.raeic.embarker.land.utils.ChunkCoord;
+import com.raeic.embarker.reflections.classes.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -21,13 +21,16 @@ public class LandScheduler {
     private ConcurrentHashMap<Player, PlayerViewingBorderMetadata> playerViewingBorderMap;
 
     public LandScheduler() {
-        playerViewingBorderMap = new ConcurrentHashMap<>();
         init();
     }
 
     public void showPlayerChunkBorder(Player p) {
-        Chunk chunk = p.getLocation().getChunk();
+        // Only show the border if it is initialized.
+        if (playerViewingBorderMap == null) {
+            return;
+        }
 
+        Chunk chunk = p.getLocation().getChunk();
         playerViewingBorderMap.put(p, new PlayerViewingBorderMetadata(
                 new ChunkCoord(chunk.getX(), chunk.getZ()),
                 5 * 20L // 5 seconds
@@ -35,8 +38,56 @@ public class LandScheduler {
     }
 
     public void init() {
-        BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(Globals.plugin, () -> {
+        // Set up reflection for classes needed
+        CraftPlayerReflection craftPlayerReflection = Globals.reflectionManager.getCraftPlayerReflection();
+        CraftWorldReflection craftWorldReflection = Globals.reflectionManager.getCraftWorldReflection();
+        EntityPlayerReflection entityPlayerReflection = Globals.reflectionManager.getEntityPlayerReflection();
+        PacketPlayOutWorldBorderReflection packetPlayOutWorldBorderReflection = Globals.reflectionManager.getPacketPlayOutWorldBorderReflection();
+        PacketReflection packetReflection = Globals.reflectionManager.getPacketReflection();
+        PlayerConnectionReflection playerConnectionReflection = Globals.reflectionManager.getPlayerConnectionReflection();
+        WorldBorderReflection worldBorderReflection = Globals.reflectionManager.getWorldBorderReflection();
+        WorldServerReflection worldServerReflection = Globals.reflectionManager.getWorldServerReflection();
+
+        // Make sure all the reflected classes are available.
+        if (!(craftPlayerReflection.isReflectionReady() &&
+              craftWorldReflection.isReflectionReady() &&
+              entityPlayerReflection.isReflectionReady() &&
+              packetPlayOutWorldBorderReflection.isReflectionReady() &&
+              packetReflection.isReflectionReady() &&
+              playerConnectionReflection.isReflectionReady() &&
+              worldBorderReflection.isReflectionReady() &&
+              worldServerReflection.isReflectionReady())) {
+            System.out.println("[Embarker] Reflections are not working for LandScheduler. Visual staking borders are disabled.");
+            return;
+        }
+
+        playerViewingBorderMap = new ConcurrentHashMap<>();
+
+        Class<?> CraftPlayer = craftPlayerReflection.getReflectedClass();
+        Method CraftPlayer_getHandle = craftPlayerReflection.getHandleMethod();
+
+        Class<?> CraftWorld = craftWorldReflection.getReflectedClass();
+        Method CraftWorld_getHandle = craftWorldReflection.getHandleMethod();
+
+        Class<?> EntityPlayer = entityPlayerReflection.getReflectedClass();
+        Field EntityPlayer_playerConnection = entityPlayerReflection.getPlayerConnectionField();
+
+        Object EnumWorldBorderAction_INITIALIZE = packetPlayOutWorldBorderReflection.getEnumWorldBorderActionEnum("INITIALIZE");
+        Constructor<?> PacketPlayOutWorldBorderConstructor = packetPlayOutWorldBorderReflection.getConstructor();
+
+        Class<?> Packet = packetReflection.getReflectedClass();
+
+        Class<?> PlayerConnection = playerConnectionReflection.getReflectedClass();
+        Method PlayerConnection_sendPacket = playerConnectionReflection.sendPacketMethod();
+
+        Constructor<?> WorldBorderConstructor = worldBorderReflection.getConstructor();
+        Method WorldBorder_setSize = worldBorderReflection.setSizeMethod();
+        Method WorldBorder_setCenter = worldBorderReflection.setCenterMethod();
+        Field WorldBorder_world = worldBorderReflection.getWorldField();
+
+        Class<?> WorldServer = worldServerReflection.getReflectedClass();
+
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(Globals.plugin, () -> {
             ArrayList<Player> playersToRemove = new ArrayList<>();
 
             for (Map.Entry<Player, PlayerViewingBorderMetadata> entry : playerViewingBorderMap.entrySet()) {
@@ -46,38 +97,10 @@ public class LandScheduler {
                 PlayerViewingBorderMetadata metadata = entry.getValue();
 
                 try {
-                    // Set up reflection for classes needed
-                    Class<?> CraftPlayer = Globals.reflectionUtil.getCraftBukkitClass("entity.CraftPlayer");
-                    Method CraftPlayer_getHandle = CraftPlayer.getMethod("getHandle");
-
-                    Class<?> CraftWorld = Globals.reflectionUtil.getCraftBukkitClass("CraftWorld");
-                    Method CraftWorld_getHandle = CraftWorld.getMethod("getHandle");
-
-                    Class<?> WorldServer = Globals.reflectionUtil.getNMSClass("WorldServer");
-
-                    Class<?> WorldBorder = Globals.reflectionUtil.getNMSClass("WorldBorder");
-                    Constructor<?> WorldBorderConstructor = WorldBorder.getConstructor();
-                    Method WorldBorder_setSize = WorldBorder.getMethod("setSize", double.class);
-                    Method WorldBorder_setCenter = WorldBorder.getMethod("setCenter", double.class, double.class);
-                    Field WorldBorder_world = WorldBorder.getDeclaredField("world");
-
-                    Class<?> PacketPlayOutWorldBorder = Globals.reflectionUtil.getNMSClass("PacketPlayOutWorldBorder");
-                    Class<?> EnumWorldBorderAction = PacketPlayOutWorldBorder.getDeclaredClasses()[0];
-                    Constructor<?> PacketPlayOutWorldBorderConstructor = PacketPlayOutWorldBorder.getConstructor(
-                            WorldBorder,
-                            EnumWorldBorderAction
-                    );
-
-                    Class<?> EntityPlayer = Globals.reflectionUtil.getNMSClass("EntityPlayer");
-                    Field EntityPlayer_playerConnection = EntityPlayer.getDeclaredField("playerConnection");
-
-                    Class<?> PlayerConnection = Globals.reflectionUtil.getNMSClass("PlayerConnection");
-                    Class<?> Packet = Globals.reflectionUtil.getNMSClass("Packet");
-                    Method PlayerConnection_sendPacket = PlayerConnection.getMethod("sendPacket", Packet);
-
                     // Begin building a world border
                     Object craftPlayer = CraftPlayer.cast(p);
                     Object worldBorder = WorldBorderConstructor.newInstance();
+
 
                     Object worldServer = CraftWorld_getHandle.invoke(CraftWorld.cast(p.getWorld()));
                     WorldBorder_world.set(worldBorder, WorldServer.cast(worldServer));
@@ -101,14 +124,13 @@ public class LandScheduler {
 
                     Object packet = PacketPlayOutWorldBorderConstructor.newInstance(
                             worldBorder,
-                            EnumWorldBorderAction.getField("INITIALIZE").get(null)
+                            EnumWorldBorderAction_INITIALIZE
                     );
 
                     Object entityPlayer = EntityPlayer.cast(CraftPlayer_getHandle.invoke(craftPlayer));
                     Object playerConnection = PlayerConnection.cast(EntityPlayer_playerConnection.get(entityPlayer));
-                    PlayerConnection_sendPacket.invoke(playerConnection, packet);
-
-                } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                    PlayerConnection_sendPacket.invoke(playerConnection, Packet.cast(packet));
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }

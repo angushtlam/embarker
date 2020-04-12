@@ -15,7 +15,7 @@ import com.raeic.embarker.party.commands.*;
 import com.raeic.embarker.player.commands.DebugCommand;
 import com.raeic.embarker.player.events.PlayerLoadListeners;
 import com.raeic.embarker.player.models.EmbarkerPlayerManager;
-import com.raeic.embarker.utils.ReflectionUtil;
+import com.raeic.embarker.reflections.util.ReflectionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -42,7 +42,7 @@ public class Embarker extends JavaPlugin {
         super.onEnable();
 
         Globals.plugin = this;
-        Globals.reflectionUtil = new ReflectionUtil();
+        Globals.reflectionManager = new ReflectionManager();
 
         Globals.embarkerPlayers = new EmbarkerPlayerManager();
         Globals.stakedChunks = new StakedChunkManager();
