@@ -27,7 +27,7 @@ commands:
     usage: /<command> (confirm)
   invite:
     description: Invite a player to your party
-    usage: /<command> (confirm)
+    usage: /<command> <player> (confirm)
   join:
     description: Join a player's party
     usage: /<command> (confirm)
