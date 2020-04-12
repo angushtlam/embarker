@@ -45,6 +45,8 @@ public class UnstakeCommand implements CommandExecutor {
             );
 
             if (unstakeCondition.equals(UnstakeCondition.CAN_UNSTAKE)) {
+                Globals.landScheduler.showPlayerChunkBorder(p);
+
                 if (args.length == 1 && args[0].equalsIgnoreCase("confirm")) {
                     stakedChunk.delete();
                     p.sendMessage("You have unstaked this chunk of land.");
