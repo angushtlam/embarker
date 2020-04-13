@@ -4,6 +4,7 @@ import com.raeic.embarker.Globals;
 import com.raeic.embarker.db.DB;
 import com.raeic.embarker.land.enums.StakeCondition;
 import com.raeic.embarker.land.enums.UnstakeCondition;
+import com.raeic.embarker.land.utils.ChunkCoord;
 import com.raeic.embarker.utils.CachedModel;
 
 import java.sql.*;
@@ -230,15 +231,4 @@ public class StakedChunkManager extends CachedModel implements StakedChunkManage
         // Otherwise return that they have no adjacent chunks.
         return StakeCondition.NO_ADJACENT;
     }
-
-    private static class ChunkCoord {
-        int coordX;
-        int coordZ;
-
-        private ChunkCoord(int coordX, int coordZ) {
-            this.coordX = coordX;
-            this.coordZ = coordZ;
-        }
-    }
-
 }

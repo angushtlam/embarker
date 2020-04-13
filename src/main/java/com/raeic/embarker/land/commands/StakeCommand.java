@@ -53,6 +53,7 @@ public class StakeCommand implements CommandExecutor {
             String emeraldPlurality = cost == 1 ? "Emerald" : "Emeralds";
 
             StakeCondition condition = Globals.stakedChunks.canStake(ownerUniqueId, chunk.getX(), chunk.getZ(), chunk.getWorld().getName());
+            Globals.landScheduler.showPlayerChunkBorder(p);
 
             if (args.length == 0) {
                 p.sendMessage("This chunk of land is unowned.");
