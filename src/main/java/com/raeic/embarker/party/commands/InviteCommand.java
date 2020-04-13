@@ -17,8 +17,7 @@ public class InviteCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 2 || args.length < 1 || (args.length == 2 && !args[1].equalsIgnoreCase("confirm"))) {
-            sender.sendMessage("Usage: /invite <player> (confirm)");
-            return true;
+            return false;
         }
 
         if (!(sender instanceof Player)) {
