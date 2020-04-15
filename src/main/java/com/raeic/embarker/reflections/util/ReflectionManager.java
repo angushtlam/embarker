@@ -50,13 +50,23 @@ public class ReflectionManager {
     }
 
     public Class<?> getNMSClass(String name) throws ClassNotFoundException {
-        return Class.forName("net.minecraft.server."
-                             + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);
+        // Check if we can detect a Minecraft version
+        String[] packageName = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
+        if (packageName.length < 4) {
+            return null;
+        }
+
+        return Class.forName("net.minecraft.server." + packageName[3] + "." + name);
     }
 
     public Class<?> getCraftBukkitClass(String name) throws ClassNotFoundException {
-        return Class.forName("org.bukkit.craftbukkit."
-                             + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);
+        // Check if we can detect a Minecraft version
+        String[] packageName = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
+        if (packageName.length < 4) {
+            return null;
+        }
+
+        return Class.forName("org.bukkit.craftbukkit." + packageName[3] + "." + name);
     }
 
     public void init() {
