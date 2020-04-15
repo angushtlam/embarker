@@ -13,7 +13,7 @@ public class AuthDBTableSetup implements DBTableSetupInterface {
                      "  username varchar(255) not null," +
                      "  firstLogin timestamp not null default current_timestamp()," +
                      "  latestLogin timestamp not null default current_timestamp()" +
-                     ") engine=InnoDB default charset=latin1;";
+                     ");";
 
         try {
             Connection conn = DB.getConnection();

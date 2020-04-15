@@ -18,7 +18,7 @@ public class LandDBTableSetup implements DBTableSetupInterface {
                      "  firstStaked timestamp not null default current_timestamp()," +
                      "  lastUpdated timestamp not null default current_timestamp()," +
                      "  constraint chunkUniqueKey primary key (coordX, coordZ)" +
-                     ") engine=InnoDB default charset=latin1;";
+                     ");";
 
         try {
             Connection conn = DB.getConnection();
