@@ -27,7 +27,7 @@ public class LandCommand implements CommandExecutor {
         StringBuilder mapString = new StringBuilder();
 
         // If the player is a part of a party, and someone in the party owns the chunk
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
 
         for (int x = playerX - 3; x <= playerX + 3; x++) {
             for (int z = playerZ - 9; z <= playerZ + 9; z++) {

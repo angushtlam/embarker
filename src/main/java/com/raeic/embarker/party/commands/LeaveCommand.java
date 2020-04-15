@@ -1,5 +1,6 @@
 package com.raeic.embarker.party.commands;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
 import com.raeic.embarker.party.models.PartyPlayer;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ public class LeaveCommand implements CommandExecutor {
         Player p = (Player) sender;
         String playerUniqueId = p.getUniqueId().toString();
 
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         if (party == null) {
             p.sendMessage("There is no party to leave.");
             return true;
@@ -76,10 +77,14 @@ public class LeaveCommand implements CommandExecutor {
                 PartyPlayer.changeLeader(playerUniqueId, newLeaderUniqueId);
             }
 
-            // Disband the party of there are only two players. Otherwise just remove the leaving player.
+            // Disband the party of there are only two players.
+            // Otherwise just remove the leaving player (and invalidate the cache).
             if (party.getPartyPlayersUniqueId().size() <= 2) {
                 party.disband();
             } else {
+                // Invalidate the existing party as we updated it.
+                Globals.party.invalidateCacheByKey(playerUniqueId);
+
                 PartyPlayer leavingPartyPlayer = PartyPlayer.findOne(playerUniqueId);
                 if (leavingPartyPlayer != null) {
                     leavingPartyPlayer.delete();

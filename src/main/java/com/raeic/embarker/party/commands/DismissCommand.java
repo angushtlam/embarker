@@ -1,5 +1,6 @@
 package com.raeic.embarker.party.commands;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.auth.models.EmbarkerUser;
 import com.raeic.embarker.party.models.Party;
 import com.raeic.embarker.party.models.PartyPlayer;
@@ -26,8 +27,9 @@ public class DismissCommand implements CommandExecutor {
         }
 
         Player p = (Player) sender;
+        String playerUniqueId = p.getUniqueId().toString();
 
-        if (!PartyPlayer.isPlayerLeader(p.getUniqueId().toString())) {
+        if (!PartyPlayer.isPlayerLeader(playerUniqueId)) {
             p.sendMessage("Sorry, only party leaders can dismiss members from the party.");
             return true;
         }
@@ -47,7 +49,7 @@ public class DismissCommand implements CommandExecutor {
             return true;
         }
 
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         assert party != null; // If the sender player is known to be a leader, they should definitely have a party.
 
         if (!party.getPartyPlayersUniqueId().contains(userToDismissUniqueId)) {
@@ -82,6 +84,9 @@ public class DismissCommand implements CommandExecutor {
                 if (dismissedPartyPlayer != null) {
                     dismissedPartyPlayer.delete();
                 }
+
+                // Invalidate the existing party as we updated it.
+                Globals.party.invalidateCacheByKey(playerUniqueId);
             }
 
         } else {

@@ -1,6 +1,7 @@
 package com.raeic.embarker.party.commands;
 
 import com.google.common.collect.ImmutableList;
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
 import com.raeic.embarker.party.models.PartyPlayer;
 import com.raeic.embarker.party.models.PartyPlayerInvite;
@@ -63,12 +64,12 @@ public class JoinCommand implements CommandExecutor {
                 return true;
             }
 
-            Party newParty = Party.findParty(inviteSenderPlayerUniqueId);
+            Party newParty = Globals.party.findParty(inviteSenderPlayerUniqueId);
 
             if (args.length == 2 && args[1].equalsIgnoreCase("confirm")) {
                 // Dismiss old party if the party leader is joining a new party.
                 if (PartyPlayer.isPlayerLeader(playerUniqueId)) {
-                    Party oldParty = Party.findParty(playerUniqueId);
+                    Party oldParty = Globals.party.findParty(playerUniqueId);
 
                     if (oldParty != null) {
                         for (String oldPartyPlayerUniqueId : oldParty.getPartyPlayersUniqueId()) {
@@ -107,6 +108,9 @@ public class JoinCommand implements CommandExecutor {
 
                 PartyPlayer newPartyPlayer = new PartyPlayer(playerUniqueId, inviteSenderPlayerUniqueId);
                 newPartyPlayer.save();
+
+                // Invalidate the existing party as we updated it.
+                Globals.party.invalidateCacheByKey(inviteSenderPlayerUniqueId);
 
                 // Delete all other invites the joining player has, as they do not make sense anymore
                 PartyPlayerInvite.deleteAllInvites(playerUniqueId);

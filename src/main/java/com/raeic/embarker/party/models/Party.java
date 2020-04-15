@@ -12,12 +12,15 @@ public class Party {
     String leaderUniqueId;
     ArrayList<String> partyPlayerUniqueIds;
 
-    private Party(String leaderUniqueId, ArrayList<String> partyPlayerUniqueIds) {
+    public Party(String leaderUniqueId, ArrayList<String> partyPlayerUniqueIds) {
         this.leaderUniqueId = leaderUniqueId;
         this.partyPlayerUniqueIds = partyPlayerUniqueIds;
     }
 
     public void disband() {
+        // Invalidate the cache first when the party doesn't exist anymore
+        Globals.party.invalidateCacheByKey(leaderUniqueId);
+
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerpartyplayer where leaderUniqueId = ?";
             try {
@@ -46,6 +49,10 @@ public class Party {
         return partyPlayerUniqueIds;
     }
 
+    public void setPartyPlayerUniqueIds(ArrayList<String> partyPlayerUniqueIds) {
+        this.partyPlayerUniqueIds = partyPlayerUniqueIds;
+    }
+
     public ArrayList<String> getPartyPlayersName() {
         ArrayList<String> memberNames = new ArrayList<>();
 
@@ -57,54 +64,5 @@ public class Party {
         }
 
         return memberNames;
-    }
-
-    public static Party findParty(String playerLookupUniqueId) {
-        // Check if the player belong to a party first
-        PartyPlayer player = PartyPlayer.findOne(playerLookupUniqueId);
-        if (player == null) {
-            return null;
-        }
-
-        // Query by the party leader unique ID.
-        String leaderLookupUniqueId;
-        if (PartyPlayer.isPlayerLeader(playerLookupUniqueId)) {
-            leaderLookupUniqueId = playerLookupUniqueId;
-        } else {
-            leaderLookupUniqueId = player.getLeaderUniqueId();
-        }
-
-        String sql = "select " +
-                     "  playerUniqueId " +
-                     "from embarkerpartyplayer " +
-                     "where " +
-                     "  leaderUniqueId = '" + leaderLookupUniqueId + "' ";
-
-        try {
-            Connection conn = DB.getConnection();
-            Statement statement = conn.createStatement();
-            ResultSet results = statement.executeQuery(sql);
-        
-            ArrayList<String> partyPlayerUniqueIds = new ArrayList<>();
-
-            if (results != null) {
-                while (results.next()) {
-                    partyPlayerUniqueIds.add(results.getString("playerUniqueId"));
-                }
-                results.close();
-            }
-            statement.close();
-
-            // Only return a party if there are more than one entry.
-            if (partyPlayerUniqueIds.size() > 0) {
-                return new Party(leaderLookupUniqueId, partyPlayerUniqueIds);
-            }
-
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return null;
-        }
-
-        return null;
     }
 }
