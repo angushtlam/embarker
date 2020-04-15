@@ -49,7 +49,7 @@ public class DismissCommand implements CommandExecutor {
             return true;
         }
 
-        Party party = Globals.party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(playerUniqueId);
         assert party != null; // If the sender player is known to be a leader, they should definitely have a party.
 
         if (!party.getPartyPlayersUniqueId().contains(userToDismissUniqueId)) {
