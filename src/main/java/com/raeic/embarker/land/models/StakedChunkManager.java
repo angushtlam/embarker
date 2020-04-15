@@ -36,10 +36,6 @@ public class StakedChunkManager extends CachedModel implements StakedChunkManage
         }
 
         stakedChunk.save();
-
-        // Also, invalidate the EmbarkerPlayer cache because it's no longer accurate on write
-        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
-
         return stakedChunk;
     }
 
@@ -52,11 +48,6 @@ public class StakedChunkManager extends CachedModel implements StakedChunkManage
             return cache.get(cacheKey);
         }
 
-        return findOneIgnoreCache(coordX, coordZ, worldName);
-    }
-
-    @Override
-    public StakedChunk findOneIgnoreCache(int coordX, int coordZ, String worldName) {
         String sql = "select " +
                      "  ownerUniqueId, firstStaked, lastUpdated " +
                      "from embarkerstakedchunk " +

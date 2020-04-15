@@ -68,8 +68,13 @@ public class StakedChunk implements ModelClass {
     }
 
     public void save() {
+        // Invalidate caches because it's no longer accurate on write
+        String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
+        Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
+        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
+
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
-            if (Globals.stakedChunks.findOneIgnoreCache(this.coordX, this.coordZ, this.worldName) != null) {
+            if (Globals.stakedChunks.findOne(this.coordX, this.coordZ, this.worldName) != null) {
                 String sql = "update embarkerstakedchunk " +
                              "set " +
                              "  ownerUniqueId = ?, " +
@@ -115,7 +120,7 @@ public class StakedChunk implements ModelClass {
     }
 
     public void delete() {
-        // Also, invalidate caches because it's no longer accurate on write
+        // Invalidate caches because it's no longer accurate on write
         String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
         Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
         Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
