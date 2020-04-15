@@ -12,6 +12,7 @@ import com.raeic.embarker.land.events.HangingChangeListeners;
 import com.raeic.embarker.land.models.StakedChunkManager;
 import com.raeic.embarker.land.schedulers.LandScheduler;
 import com.raeic.embarker.party.commands.*;
+import com.raeic.embarker.party.models.PartyManager;
 import com.raeic.embarker.player.commands.DebugCommand;
 import com.raeic.embarker.player.events.PlayerLoadListeners;
 import com.raeic.embarker.player.models.EmbarkerPlayerManager;
@@ -45,6 +46,7 @@ public class Embarker extends JavaPlugin {
         Globals.reflectionManager = new ReflectionManager();
 
         Globals.embarkerPlayers = new EmbarkerPlayerManager();
+        Globals.party = new PartyManager();
         Globals.stakedChunks = new StakedChunkManager();
 
         Globals.landScheduler = new LandScheduler();

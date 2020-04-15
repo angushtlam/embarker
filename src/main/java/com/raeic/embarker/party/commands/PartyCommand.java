@@ -1,5 +1,6 @@
 package com.raeic.embarker.party.commands;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,7 +21,7 @@ public class PartyCommand implements CommandExecutor {
 
         Player p = (Player) sender;
         String playerUniqueId = p.getUniqueId().toString();
-        Party party = Party.findParty(playerUniqueId);
+        Party party = Globals.party.findParty(playerUniqueId);
 
         // Players can be in their own party.
         if (party == null || party.getPartyPlayersUniqueId().size() == 1) {

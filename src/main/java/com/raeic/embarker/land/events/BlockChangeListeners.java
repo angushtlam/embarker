@@ -40,7 +40,7 @@ public class BlockChangeListeners implements Listener {
         }
 
         // If the player is a part of a party, and someone in the party owns the chunk
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
             return;
         }
@@ -95,7 +95,7 @@ public class BlockChangeListeners implements Listener {
         }
 
         // If the player is a part of a party, and someone in the party owns the chunk
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
             return;
         }
@@ -130,7 +130,7 @@ public class BlockChangeListeners implements Listener {
         }
 
         // If the player is a part of a party, and someone in the party owns the chunk
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
             return;
         }
@@ -165,7 +165,7 @@ public class BlockChangeListeners implements Listener {
         }
 
         // If the player is a part of a party, and someone in the party owns the chunk
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
             return;
         }
@@ -221,7 +221,7 @@ public class BlockChangeListeners implements Listener {
         }
 
         // If the player is a part of a party, and someone in the party owns the chunk
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
         if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
             return;
         }
@@ -275,7 +275,7 @@ public class BlockChangeListeners implements Listener {
             }
 
             // If the player is a part of a party, and someone in the party owns the chunk
-            Party party = Party.findParty(p.getUniqueId().toString());
+            Party party = Globals.party.findParty(p.getUniqueId().toString());
             if (party != null && party.getPartyPlayersUniqueId().contains(chunkOwnerUniqueId.toString())) {
                 return;
             }

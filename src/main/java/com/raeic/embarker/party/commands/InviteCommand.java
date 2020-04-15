@@ -1,6 +1,7 @@
 package com.raeic.embarker.party.commands;
 
 import com.google.common.collect.ImmutableList;
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
 import com.raeic.embarker.party.models.PartyPlayer;
 import com.raeic.embarker.party.models.PartyPlayerInvite;
@@ -64,7 +65,7 @@ public class InviteCommand implements CommandExecutor {
 
                 }
 
-                Party party = Party.findParty(playerUniqueId);
+                Party party = Globals.party.findParty(playerUniqueId);
                 if (party != null) {
                     playerToInvite.sendMessage("Their party consists of: " + String.join(", ", party.getPartyPlayersName()));
                 }

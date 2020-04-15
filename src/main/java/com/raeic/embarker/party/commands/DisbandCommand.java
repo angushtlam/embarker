@@ -1,5 +1,6 @@
 package com.raeic.embarker.party.commands;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -24,7 +25,7 @@ public class DisbandCommand implements CommandExecutor {
 
         Player p = (Player) sender;
 
-        Party party = Party.findParty(p.getUniqueId().toString());
+        Party party = Globals.party.findParty(p.getUniqueId().toString());
 
         if (party == null) {
             p.sendMessage("There is no party to disband.");
