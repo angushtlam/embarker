@@ -109,9 +109,6 @@ public class JoinCommand implements CommandExecutor {
                 PartyPlayer newPartyPlayer = new PartyPlayer(playerUniqueId, inviteSenderPlayerUniqueId);
                 newPartyPlayer.save();
 
-                // Invalidate the existing party as we updated it.
-                Globals.party.invalidateCacheByKey(inviteSenderPlayerUniqueId);
-
                 // Delete all other invites the joining player has, as they do not make sense anymore
                 PartyPlayerInvite.deleteAllInvites(playerUniqueId);
 

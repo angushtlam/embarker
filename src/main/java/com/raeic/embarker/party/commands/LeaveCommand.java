@@ -82,9 +82,6 @@ public class LeaveCommand implements CommandExecutor {
             if (party.getPartyPlayersUniqueId().size() <= 2) {
                 party.disband();
             } else {
-                // Invalidate the existing party as we updated it.
-                Globals.party.invalidateCacheByKey(playerUniqueId);
-
                 PartyPlayer leavingPartyPlayer = PartyPlayer.findOne(playerUniqueId);
                 if (leavingPartyPlayer != null) {
                     leavingPartyPlayer.delete();

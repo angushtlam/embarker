@@ -84,9 +84,6 @@ public class DismissCommand implements CommandExecutor {
                 if (dismissedPartyPlayer != null) {
                     dismissedPartyPlayer.delete();
                 }
-
-                // Invalidate the existing party as we updated it.
-                Globals.party.invalidateCacheByKey(playerUniqueId);
             }
 
         } else {
