@@ -25,17 +25,13 @@ public class StakedChunkManager extends CachedModel implements StakedChunkManage
         // If the cache contains a staked chunk, update the existing object for the chunk.
         if (cache.containsKey(stakedChunkCacheKey)) {
             stakedChunk = cache.get(stakedChunkCacheKey);
-
             stakedChunk.setOwnerUniqueId(ownerUniqueId);
             stakedChunk.setFirstStaked(firstStaked);
             stakedChunk.setLastUpdated(lastUpdated);
-
         } else {
             stakedChunk = new StakedChunk(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
-            cache.put(stakedChunkCacheKey, stakedChunk);
         }
 
-        stakedChunk.save();
         return stakedChunk;
     }
 
@@ -71,6 +67,7 @@ public class StakedChunkManager extends CachedModel implements StakedChunkManage
                     Timestamp firstStaked = results.getTimestamp("firstStaked");
                     Timestamp lastUpdated = results.getTimestamp("lastUpdated");
                     result = Globals.stakedChunks.create(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
+                    result.save();
                 }
 
                 results.close();

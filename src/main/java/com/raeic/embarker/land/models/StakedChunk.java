@@ -31,24 +31,12 @@ public class StakedChunk implements ModelClass {
         return coordX;
     }
 
-    public void setCoordX(int coordX) {
-        this.coordX = coordX;
-    }
-
     public int getCoordZ() {
         return coordZ;
     }
 
-    public void setCoordZ(int coordZ) {
-        this.coordZ = coordZ;
-    }
-
     public String getWorldName() {
         return worldName;
-    }
-
-    public void setWorldName(String worldName) {
-        this.worldName = worldName;
     }
 
     public String getOwnerUniqueId() {
@@ -67,58 +55,6 @@ public class StakedChunk implements ModelClass {
         this.lastUpdated = lastUpdated;
     }
 
-    public void save() {
-        // Invalidate caches because it's no longer accurate on write
-        String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
-        Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
-        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
-
-        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
-            if (Globals.stakedChunks.findOne(this.coordX, this.coordZ, this.worldName) != null) {
-                String sql = "update embarkerstakedchunk " +
-                             "set " +
-                             "  ownerUniqueId = ?, " +
-                             "  lastUpdated = ? " +
-                             "where " +
-                             "  coordX = ? " +
-                             "  and coordZ = ? " +
-                             "  and worldName = ?";
-
-                try {
-                    Connection conn = DB.getConnection();
-                    PreparedStatement values = conn.prepareStatement(sql);
-                    values.setString(1, this.ownerUniqueId);
-                    values.setTimestamp(2, this.lastUpdated);
-                    values.setInt(3, this.coordX);
-                    values.setInt(4, this.coordZ);
-                    values.setString(5, this.worldName);
-                    values.executeUpdate();
-                    values.closeOnCompletion();
-
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
-                }
-            } else {
-                String sql = "insert into embarkerstakedchunk(coordX, coordZ, worldName, ownerUniqueId) " +
-                             "values(?, ?, ?, ?)";
-
-                try {
-                    Connection conn = DB.getConnection();
-                    PreparedStatement values = conn.prepareStatement(sql);
-                    values.setInt(1, this.coordX);
-                    values.setInt(2, this.coordZ);
-                    values.setString(3, this.worldName);
-                    values.setString(4, this.ownerUniqueId);
-                    values.executeUpdate();
-                    values.closeOnCompletion();
-
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
-                }
-            }
-        });
-    }
-
     public void delete() {
         // Invalidate caches because it's no longer accurate on write
         String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
@@ -128,6 +64,32 @@ public class StakedChunk implements ModelClass {
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerstakedchunk " +
                          "where coordX = ? and coordZ = ? and worldName = ? and ownerUniqueId = ?";
+
+            try {
+                Connection conn = DB.getConnection();
+                PreparedStatement values = conn.prepareStatement(sql);
+                values.setInt(1, this.coordX);
+                values.setInt(2, this.coordZ);
+                values.setString(3, this.worldName);
+                values.setString(4, this.ownerUniqueId);
+                values.executeUpdate();
+                values.closeOnCompletion();
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        });
+    }
+
+    public void save() {
+        // Invalidate caches because it's no longer accurate on write
+        String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
+        Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
+        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
+
+        Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
+            String sql = "replace into embarkerstakedchunk(coordX, coordZ, worldName, ownerUniqueId) " +
+                         "values(?, ?, ?, ?)";
 
             try {
                 Connection conn = DB.getConnection();
