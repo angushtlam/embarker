@@ -15,11 +15,13 @@ public class DB {
 
     private static Connection cachedConnection = null;
 
-    public static void setup(String url, String username, String password) {
+    public static void setupConnection(String url, String username, String password) {
         DB.url = url;
         DB.username = username;
         DB.password = password;
+    }
 
+    public static void setupTables() {
         new AuthDBTableSetup().setup();
         new LandDBTableSetup().setup();
         new PartyDBTableSetup().setup();

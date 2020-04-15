@@ -82,8 +82,9 @@ public class Embarker extends JavaPlugin {
         String password = pluginConfig.getString("db.password");
 
         try {
-            DB.setup(url, username, password);
+            DB.setupConnection(url, username, password);
             DB.getConnection();
+            DB.setupTables();
             ServerStartupState.instance.setReady(true);
             ServerStartupState.instance.setMessage("");
         } catch (SQLException e) {
