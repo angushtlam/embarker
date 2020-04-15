@@ -18,9 +18,6 @@ public class Party {
     }
 
     public void disband() {
-        // Invalidate the cache first when the party doesn't exist anymore
-        Globals.party.invalidateCacheByKey(leaderUniqueId);
-
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerpartyplayer where leaderUniqueId = ?";
             try {
@@ -33,6 +30,11 @@ public class Party {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+
+            // Invalidate the cache synchronously when the party doesn't exist anymore
+            Bukkit.getScheduler().runTask(Globals.plugin, () -> {
+                Globals.party.invalidateCacheByKey(leaderUniqueId);
+            });
         });
     }
 
