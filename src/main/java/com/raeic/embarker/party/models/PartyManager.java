@@ -31,11 +31,6 @@ public class PartyManager extends CachedModel<Party> implements PartyManagerInte
             return cache.get(playerLookupUniqueId);
         }
 
-        return findPartyIgnoreCache(playerLookupUniqueId);
-    }
-
-    @Override
-    public Party findPartyIgnoreCache(String playerLookupUniqueId) {
         // Check if the player belong to a party first
         PartyPlayer player = PartyPlayer.findOne(playerLookupUniqueId);
         if (player == null) {

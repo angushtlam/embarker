@@ -5,5 +5,4 @@ import java.util.ArrayList;
 public interface PartyManagerInterface {
     Party create(String leaderUniqueId, ArrayList<String> partyPlayerUniqueIds);
     Party findParty(String playerLookupUniqueId);
-    Party findPartyIgnoreCache(String playerLookupUniqueId);
 }
