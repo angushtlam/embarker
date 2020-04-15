@@ -56,11 +56,6 @@ public class StakedChunk implements ModelClass {
     }
 
     public void delete() {
-        // Invalidate caches because it's no longer accurate on write
-        String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
-        Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
-        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
-
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "delete from embarkerstakedchunk " +
                          "where coordX = ? and coordZ = ? and worldName = ? and ownerUniqueId = ?";
@@ -75,6 +70,12 @@ public class StakedChunk implements ModelClass {
                 values.executeUpdate();
                 values.closeOnCompletion();
 
+                // Invalidate caches because it's no longer accurate on write
+                Bukkit.getScheduler().runTask(Globals.plugin, () -> {
+                    String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
+                    Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
+                    Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
+                });
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
@@ -82,11 +83,6 @@ public class StakedChunk implements ModelClass {
     }
 
     public void save() {
-        // Invalidate caches because it's no longer accurate on write
-        String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
-        Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
-        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
-
         Bukkit.getScheduler().runTaskAsynchronously(Globals.plugin, () -> {
             String sql = "replace into embarkerstakedchunk(coordX, coordZ, worldName, ownerUniqueId) " +
                          "values(?, ?, ?, ?)";
@@ -101,6 +97,12 @@ public class StakedChunk implements ModelClass {
                 values.executeUpdate();
                 values.closeOnCompletion();
 
+                // Invalidate caches because it's no longer accurate on write
+                Bukkit.getScheduler().runTask(Globals.plugin, () -> {
+                    String stakedChunkCacheKey = coordX + "," + coordZ + "," + worldName;
+                    Globals.stakedChunks.invalidateCacheByKey(stakedChunkCacheKey);
+                    Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
+                });
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
