@@ -33,6 +33,12 @@ public class PartyPlayer {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+
+            // Return to the synchronous thread and invalidate the cache on the
+            // party leader's Party object, as the party's been updated.
+            Bukkit.getScheduler().runTask(Globals.plugin, () -> {
+                Globals.party.invalidateCacheByKey(leaderUniqueId);
+            });
         });
     }
 
@@ -72,6 +78,12 @@ public class PartyPlayer {
                     System.out.println(ex.getMessage());
                 }
             }
+
+            // Return to the synchronous thread and invalidate the cache on the
+            // party leader's Party object, as the party's been updated.
+            Bukkit.getScheduler().runTask(Globals.plugin, () -> {
+                Globals.party.invalidateCacheByKey(leaderUniqueId);
+            });
         });
     }
 

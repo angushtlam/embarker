@@ -2,10 +2,10 @@ package com.raeic.embarker.utils;
 
 import com.raeic.embarker.land.models.StakedChunk;
 
-public abstract class CachedModel {
+public abstract class CachedModel<T> {
     private static final int CACHE_NUM_OF_OBJECT = 1000000;
 
-    protected LRUCache<String, StakedChunk> cache;
+    protected LRUCache<String, T> cache;
 
     public CachedModel() {
         cache = new LRUCache<>(CACHE_NUM_OF_OBJECT);

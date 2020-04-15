@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class StakedChunkManager extends CachedModel implements StakedChunkManagerInterface {
+public class StakedChunkManager extends CachedModel<StakedChunk> implements StakedChunkManagerInterface {
     @Override
     public StakedChunk create(int coordX, int coordZ, String worldName, String ownerUniqueId) {
         return create(coordX, coordZ, worldName, ownerUniqueId, new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
@@ -193,7 +193,7 @@ public class StakedChunkManager extends CachedModel implements StakedChunkManage
 
     @Override
     public StakeCondition canStake(String ownerUniqueId, int coordX, int coordZ, String worldName) {
-        if (Globals.stakedChunks.findOne(coordX, coordZ, worldName) != null) {
+        if (findOne(coordX, coordZ, worldName) != null) {
             return StakeCondition.ALREADY_STAKED;
         }
 
