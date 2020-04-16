@@ -109,12 +109,14 @@ public class StakeCommand implements CommandExecutor {
                     p.getInventory().remove(itemToRemove);
                 }
 
-                Globals.stakedChunks.create(
+                stakedChunk = Globals.stakedChunks.create(
                         chunk.getX(),
                         chunk.getZ(),
                         chunk.getWorld().getName(),
                         p.getUniqueId().toString()
                 );
+                stakedChunk.save();
+                
                 p.sendMessage("Confirmed! You paid " + cost + " " + emeraldPlurality + " to stake this chunk of land.");
             }
         }

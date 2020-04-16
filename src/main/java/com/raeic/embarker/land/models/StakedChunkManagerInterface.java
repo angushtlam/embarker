@@ -11,5 +11,4 @@ public interface StakedChunkManagerInterface {
     StakedChunk create(int coordX, int coordZ, String worldName, String ownerUniqueId);
     StakedChunk create(int coordX, int coordZ, String worldName, String ownerUniqueId, Timestamp firstStaked, Timestamp lastUpdated);
     StakedChunk findOne(int coordX, int coordZ, String worldName);
-    StakedChunk findOneIgnoreCache(int coordX, int coordZ, String worldName);
 }

@@ -25,20 +25,12 @@ public class StakedChunkManager extends CachedModel<StakedChunk> implements Stak
         // If the cache contains a staked chunk, update the existing object for the chunk.
         if (cache.containsKey(stakedChunkCacheKey)) {
             stakedChunk = cache.get(stakedChunkCacheKey);
-
             stakedChunk.setOwnerUniqueId(ownerUniqueId);
             stakedChunk.setFirstStaked(firstStaked);
             stakedChunk.setLastUpdated(lastUpdated);
-
         } else {
             stakedChunk = new StakedChunk(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
-            cache.put(stakedChunkCacheKey, stakedChunk);
         }
-
-        stakedChunk.save();
-
-        // Also, invalidate the EmbarkerPlayer cache because it's no longer accurate on write
-        Globals.embarkerPlayers.invalidateCacheByKey(ownerUniqueId);
 
         return stakedChunk;
     }
@@ -52,11 +44,6 @@ public class StakedChunkManager extends CachedModel<StakedChunk> implements Stak
             return cache.get(cacheKey);
         }
 
-        return findOneIgnoreCache(coordX, coordZ, worldName);
-    }
-
-    @Override
-    public StakedChunk findOneIgnoreCache(int coordX, int coordZ, String worldName) {
         String sql = "select " +
                      "  ownerUniqueId, firstStaked, lastUpdated " +
                      "from embarkerstakedchunk " +
@@ -79,7 +66,8 @@ public class StakedChunkManager extends CachedModel<StakedChunk> implements Stak
                     String ownerUniqueId = results.getString("ownerUniqueId");
                     Timestamp firstStaked = results.getTimestamp("firstStaked");
                     Timestamp lastUpdated = results.getTimestamp("lastUpdated");
-                    result = create(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
+                    result = Globals.stakedChunks.create(coordX, coordZ, worldName, ownerUniqueId, firstStaked, lastUpdated);
+                    result.save();
                 }
 
                 results.close();

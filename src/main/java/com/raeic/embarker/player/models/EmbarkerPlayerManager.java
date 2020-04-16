@@ -53,11 +53,11 @@ public class EmbarkerPlayerManager implements EmbarkerPlayerManagerInterface {
 
                     // Add the cached chunk if it's there, otherwise make a new one.
                     StakedChunk newStakedChunk = Globals.stakedChunks.findOne(coordX, coordZ, worldName);
-                    if (newStakedChunk != null) {
-                        stakedChunks.add(newStakedChunk);
-                    } else {
-                        stakedChunks.add(Globals.stakedChunks.create(coordX, coordZ, worldName, uniqueId, firstStaked, lastUpdated));
+                    if (newStakedChunk == null) {
+                        newStakedChunk = Globals.stakedChunks.create(coordX, coordZ, worldName, uniqueId, firstStaked, lastUpdated);
+                        newStakedChunk.save();
                     }
+                    stakedChunks.add(newStakedChunk);
                 }
 
                 result = new EmbarkerPlayer(uniqueId, stakedChunks);
