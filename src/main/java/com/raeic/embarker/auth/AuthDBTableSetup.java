@@ -1,12 +1,10 @@
 package com.raeic.embarker.auth;
 
 import com.raeic.embarker.db.DB;
-import com.raeic.embarker.db.DBTableSetupInterface;
 
 import java.sql.*;
 
-public class AuthDBTableSetup implements DBTableSetupInterface {
-    @Override
+public class AuthDBTableSetup {
     public void setup() {
         String sql = "create table if not exists embarkeruser (" +
                      "  uniqueId varchar(255) not null primary key," +

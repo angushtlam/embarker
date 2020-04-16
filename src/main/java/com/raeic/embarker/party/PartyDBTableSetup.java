@@ -1,14 +1,12 @@
 package com.raeic.embarker.party;
 
 import com.raeic.embarker.db.DB;
-import com.raeic.embarker.db.DBTableSetupInterface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class PartyDBTableSetup implements DBTableSetupInterface {
-    @Override
+public class PartyDBTableSetup {
     public void setup() {
         // JBDC really doesn't like creating multiple tables in one query.
         String sql = "create table if not exists embarkerpartyplayerinvite ("+

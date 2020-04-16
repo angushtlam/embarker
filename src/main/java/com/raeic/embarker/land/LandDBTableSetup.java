@@ -1,14 +1,12 @@
 package com.raeic.embarker.land;
 
 import com.raeic.embarker.db.DB;
-import com.raeic.embarker.db.DBTableSetupInterface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class LandDBTableSetup implements DBTableSetupInterface {
-    @Override
+public class LandDBTableSetup {
     public void setup() {
         String sql = "create table if not exists embarkerstakedchunk (" +
                      "  coordX int(11) not null," +
