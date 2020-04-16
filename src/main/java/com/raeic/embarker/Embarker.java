@@ -17,14 +17,14 @@ import com.raeic.embarker.player.commands.DebugCommand;
 import com.raeic.embarker.player.events.PlayerLoadListeners;
 import com.raeic.embarker.player.models.EmbarkerPlayerManager;
 import com.raeic.embarker.reflections.util.ReflectionManager;
+import java.io.File;
+import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 
-import java.io.File;
-import java.sql.SQLException;
 
 public class Embarker extends JavaPlugin {
     public Embarker() {
@@ -44,6 +44,14 @@ public class Embarker extends JavaPlugin {
 
         Globals.plugin = this;
         Globals.reflectionManager = new ReflectionManager();
+
+        String serverPackageName = Bukkit.getServer().getClass().getPackage().getName();
+        if (serverPackageName != null) {
+            String[] splitServerPackageName = serverPackageName.split("\\.");
+            if (splitServerPackageName.length > 3) {
+                Globals.serverVersion = splitServerPackageName[3];
+            }
+        }
 
         Globals.embarkerPlayers = new EmbarkerPlayerManager();
         Globals.party = new PartyManager();
