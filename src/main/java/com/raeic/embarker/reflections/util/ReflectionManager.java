@@ -1,7 +1,7 @@
 package com.raeic.embarker.reflections.util;
 
+import com.raeic.embarker.Globals;
 import com.raeic.embarker.reflections.classes.*;
-import org.bukkit.Bukkit;
 
 public class ReflectionManager {
     private CraftPlayerReflection craftPlayerReflection;
@@ -50,13 +50,11 @@ public class ReflectionManager {
     }
 
     public Class<?> getNMSClass(String name) throws ClassNotFoundException {
-        return Class.forName("net.minecraft.server."
-                             + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);
+        return Class.forName("net.minecraft.server." + Globals.serverVersion + "." + name);
     }
 
     public Class<?> getCraftBukkitClass(String name) throws ClassNotFoundException {
-        return Class.forName("org.bukkit.craftbukkit."
-                             + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + "." + name);
+        return Class.forName("org.bukkit.craftbukkit." + Globals.serverVersion + "." + name);
     }
 
     public void init() {

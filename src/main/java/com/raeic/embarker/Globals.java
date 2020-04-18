@@ -9,6 +9,7 @@ import com.raeic.embarker.reflections.util.ReflectionManager;
 public class Globals {
     public static Embarker plugin = null;
     public static ReflectionManager reflectionManager = null;
+    public static String serverVersion = null;
 
     public static EmbarkerPlayerManager embarkerPlayers = null;
     public static StakedChunkManager stakedChunks = null;

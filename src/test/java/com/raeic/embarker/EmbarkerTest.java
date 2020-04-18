@@ -43,6 +43,7 @@ public abstract class EmbarkerTest {
             var conn = DB.getConnection();
             conn.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ);
             conn.createStatement().execute("start transaction");
+            DB.setupTables();
         } catch (SQLException ex) {
             fail(ex);
         }

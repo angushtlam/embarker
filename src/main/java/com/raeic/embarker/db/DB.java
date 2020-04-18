@@ -1,5 +1,9 @@
 package com.raeic.embarker.db;
 
+import com.raeic.embarker.auth.AuthDBTableSetup;
+import com.raeic.embarker.land.LandDBTableSetup;
+import com.raeic.embarker.party.PartyDBTableSetup;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,10 +15,16 @@ public class DB {
 
     private static Connection cachedConnection = null;
 
-    public static void setup(String url, String username, String password) {
+    public static void setupConnection(String url, String username, String password) {
         DB.url = url;
         DB.username = username;
         DB.password = password;
+    }
+
+    public static void setupTables() {
+        new AuthDBTableSetup().setup();
+        new LandDBTableSetup().setup();
+        new PartyDBTableSetup().setup();
     }
 
     public static Connection getConnection(int retries) throws SQLException {
