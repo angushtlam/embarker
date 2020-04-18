@@ -65,7 +65,7 @@ public class PartyCommandTest extends EmbarkerTest {
         result.assertResponse("You can leave your party with /leave.");
 
         String[] partyMembers = {partyLeader.getName(), partyFollower.getName()};
-        Arrays.sort(partyMembers);        
+        Arrays.sort(partyMembers);
         result.assertResponse("Your party consists of: " +  String.join(", ", partyMembers));
         result.assertNoResponse();
     }
