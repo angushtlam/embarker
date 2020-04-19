@@ -23,7 +23,11 @@ public class ChestProtectionListeners implements Listener {
         Block block = event.getClickedBlock();
         Material blockMaterial = block.getType();
         
-        if (!(blockMaterial.equals(Material.CHEST) || blockMaterial.equals(Material.SHULKER_BOX))) {
+        if (!(
+            blockMaterial.equals(Material.CHEST) || 
+            blockMaterial.equals(Material.SHULKER_BOX) || 
+            blockMaterial.equals(Material.BARREL)
+            )) {
             return;
         }
         
