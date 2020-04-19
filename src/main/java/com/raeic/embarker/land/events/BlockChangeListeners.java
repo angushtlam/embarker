@@ -1,5 +1,6 @@
 package com.raeic.embarker.land.events;
 
+import com.destroystokyo.paper.Title;
 import com.raeic.embarker.Globals;
 import com.raeic.embarker.land.models.StakedChunk;
 import com.raeic.embarker.party.models.Party;
@@ -47,7 +48,7 @@ public class BlockChangeListeners implements Listener {
 
         event.setCancelled(true);
         OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        p.sendTitle(new Title("✖", "Staked by " + owner.getName(), 0, 10, 1));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -103,7 +104,7 @@ public class BlockChangeListeners implements Listener {
         event.setBuildable(false);
 
         OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        p.sendTitle(new Title("✖", "Staked by " + owner.getName(), 0, 10, 1));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -138,7 +139,7 @@ public class BlockChangeListeners implements Listener {
         event.setCancelled(true);
 
         OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        p.sendTitle(new Title("✖", "Staked by " + owner.getName(), 0, 10, 1));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -174,7 +175,7 @@ public class BlockChangeListeners implements Listener {
         event.setCancelled(true);
 
         OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        p.sendTitle(new Title("✖", "Staked by " + owner.getName(), 0, 10, 1));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -229,7 +230,7 @@ public class BlockChangeListeners implements Listener {
         event.setCancelled(true);
 
         OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-        p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+        p.sendTitle(new Title("✖", "Staked by " + owner.getName(), 0, 10, 1));
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -284,7 +285,7 @@ public class BlockChangeListeners implements Listener {
             event.setCancelled(true);
 
             OfflinePlayer owner = Bukkit.getOfflinePlayer(chunkOwnerUniqueId);
-            p.sendMessage("This chunk is staked by " + owner.getName() + ".");
+            p.sendTitle(new Title("✖", "Staked by " + owner.getName(), 0, 10, 1));
 
             return;
         }

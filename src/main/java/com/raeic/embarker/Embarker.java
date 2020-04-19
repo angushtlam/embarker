@@ -7,6 +7,7 @@ import com.raeic.embarker.land.commands.LandCommand;
 import com.raeic.embarker.land.commands.StakeCommand;
 import com.raeic.embarker.land.commands.UnstakeCommand;
 import com.raeic.embarker.land.events.BlockChangeListeners;
+import com.raeic.embarker.land.events.ChestProtectionListeners;
 import com.raeic.embarker.land.events.EntityBlockChangeListeners;
 import com.raeic.embarker.land.events.HangingChangeListeners;
 import com.raeic.embarker.land.models.StakedChunkManager;
@@ -77,6 +78,7 @@ public class Embarker extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PlayerAuthListeners(), this);
 
         this.getServer().getPluginManager().registerEvents(new BlockChangeListeners(), this);
+        this.getServer().getPluginManager().registerEvents(new ChestProtectionListeners(), this);
         this.getServer().getPluginManager().registerEvents(new EntityBlockChangeListeners(), this);
         this.getServer().getPluginManager().registerEvents(new HangingChangeListeners(), this);
 
