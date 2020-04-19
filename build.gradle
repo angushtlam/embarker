@@ -1,6 +1,5 @@
 plugins {
-    id("idea")
-    id("java")
+    id 'java'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
@@ -13,13 +12,6 @@ repositories {
 compileJava {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
-}
-
-idea {
-    module {
-        sourceDirs += file("$projectDir/build/classes/java/main")
-        generatedSourceDirs += file("$projectDir/build/classes/java/main")
-    }
 }
 
 sourceSets {
