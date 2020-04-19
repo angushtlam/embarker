@@ -2,8 +2,6 @@ package com.raeic.embarker.reflections.classes;
 
 import com.raeic.embarker.Globals;
 
-import java.lang.reflect.Method;
-
 public class WorldServerReflection {
     public boolean isReflectionReady() {
         return getReflectedClass() != null;

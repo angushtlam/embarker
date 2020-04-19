@@ -1,7 +1,5 @@
 package com.raeic.embarker.utils;
 
-import com.raeic.embarker.land.models.StakedChunk;
-
 public abstract class CachedModel<T> {
     private static final int CACHE_NUM_OF_OBJECT = 1000000;
 
