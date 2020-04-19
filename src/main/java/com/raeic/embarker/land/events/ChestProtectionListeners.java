@@ -20,13 +20,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class ChestProtectionListeners implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void handlePlayerInteractChest(PlayerInteractEvent event) {
-        Material material = event.getMaterial();
+        Block block = event.getClickedBlock();
+        Material blockMaterial = block.getType();
         
-        if (!(material.equals(Material.CHEST) || material.equals(Material.SHULKER_BOX))) {
+        if (!(blockMaterial.equals(Material.CHEST) || blockMaterial.equals(Material.SHULKER_BOX))) {
             return;
         }
-
-        Block block = event.getClickedBlock();
+        
         Player p = event.getPlayer();
         Chunk chunk = block.getLocation().getChunk();
 
