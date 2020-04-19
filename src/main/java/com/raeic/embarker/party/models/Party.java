@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Party {
     String leaderUniqueId;
@@ -65,6 +66,7 @@ public class Party {
             }
         }
 
+        Collections.sort(memberNames);
         return memberNames;
     }
 }

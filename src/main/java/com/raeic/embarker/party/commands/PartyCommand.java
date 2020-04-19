@@ -16,7 +16,7 @@ public class PartyCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be ran by a player.");
-            return true;
+            return false;
         }
 
         Player p = (Player) sender;

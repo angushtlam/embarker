@@ -3,6 +3,7 @@ package com.raeic.embarker.party.commands;
 import com.google.common.collect.ImmutableList;
 import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
+import com.raeic.embarker.party.models.PartyManager;
 import com.raeic.embarker.party.models.PartyPlayer;
 import com.raeic.embarker.party.models.PartyPlayerInvite;
 import org.bukkit.Bukkit;
@@ -19,17 +20,22 @@ public class JoinCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 2 || args.length < 1 || (args.length == 2 && !args[1].equalsIgnoreCase("confirm"))) {
-            sender.sendMessage("Usage: /join <player> (confirm)");
-            return true;
+            return false;
         }
 
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be ran by a player.");
-            return true;
+            return false;
         }
 
         Player p = (Player) sender;
+        String playerUniqueId = p.getUniqueId().toString();
         String playerNameToJoin = args[0];
+
+        if (Globals.party.findParty(playerUniqueId) != null) {
+            p.sendMessage("Sorry, you have to leave your existing party before joining a new one.");
+            return true;
+        }
 
         // Check if the player name matches with anyone online.
         List<Player> onlinePlayers = ImmutableList.copyOf(Bukkit.getOnlinePlayers());
@@ -45,7 +51,6 @@ public class JoinCommand implements CommandExecutor {
                 return true;
             }
 
-            String playerUniqueId = p.getUniqueId().toString();
             String inviteSenderPlayerUniqueId = inviteSenderPlayer.getUniqueId().toString();
 
             PartyPlayerInvite invite = PartyPlayerInvite.findOne(inviteSenderPlayerUniqueId, playerUniqueId);
