@@ -1,20 +1,20 @@
 package com.raeic.embarker.party.commands;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
-
 import com.google.common.collect.ImmutableList;
 import com.raeic.embarker.Globals;
 import com.raeic.embarker.party.models.Party;
+import com.raeic.embarker.party.models.PartyManager;
 import com.raeic.embarker.party.models.PartyPlayer;
 import com.raeic.embarker.party.models.PartyPlayerInvite;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 
 public class JoinCommand implements CommandExecutor {
     @Override
