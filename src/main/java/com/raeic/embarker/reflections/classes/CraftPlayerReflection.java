@@ -1,9 +1,8 @@
 package com.raeic.embarker.reflections.classes;
 
-import com.raeic.embarker.Globals;
-import com.raeic.embarker.reflections.util.ReflectionManager;
-
 import java.lang.reflect.Method;
+
+import com.raeic.embarker.Globals;
 
 public class CraftPlayerReflection {
     public boolean isReflectionReady() {
